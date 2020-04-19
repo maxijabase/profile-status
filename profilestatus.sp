@@ -23,12 +23,11 @@ ConVar g_cvEnabled, g_cvApiKey, g_cvMinHours, g_cvWhitelist;
 Regex r_Numbers, r_ApiKey, r_SteamID;
 Database g_Database = null;
 
-/* Global Variables */
-
-
 public void OnPluginStart()
 {
 	Database.Connect(SQL_ConnectDatabase, "storage-local");
+	
+	CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	
 	g_cvEnabled = CreateConVar("sm_profilestatus_enabled", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvApiKey = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
@@ -102,6 +101,47 @@ public void OnClientAuthorized(int client) {
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
 	QueryDBForClient(client, auth);
+}
+
+public void QueryDBForClient(int client, char[] auth) {
+	
+	char WhitelistReadQuery[512];
+	Format(WhitelistReadQuery, sizeof(WhitelistReadQuery), "SELECT * FROM ps_whitelist WHERE steamid='%s';", auth);
+	
+	DataPack pack = new DataPack();
+	pack.WriteString(auth);
+	pack.WriteCell(client);
+	
+	g_Database.Query(SQL_ReadWhitelistQuery, WhitelistReadQuery, pack);
+}
+
+public void SQL_ReadWhitelistQuery(Database db, DBResultSet results, const char[] error, DataPack pack)
+{
+	pack.Reset();
+	char auth[40];
+	pack.ReadString(auth, sizeof(auth));
+	int client = pack.ReadCell();
+	delete pack;
+	
+	if (db == null || results == null)
+	{
+		LogError("[PS] Error while checking if user %s is whitelisted! %s", auth, error);
+		PrintToServer("[PS] Error while checking if user %s is whitelisted! %s", auth, error);
+		return;
+	}
+	
+	char logResponse[128];
+	Format(logResponse, sizeof(logResponse), "[PS] User %s is not whitelisted!", auth);
+	if (!g_cvWhitelist.BoolValue)
+		Format(logResponse, sizeof(logResponse), "[PS] Whitelist disabled!");
+	
+	if (!results.RowCount) {
+		PrintToServer("%s", logResponse);
+		RequestHours(client, auth);
+		return;
+	}
+	
+	PrintToServer("[PS] User %s is whitelisted!", auth);
 }
 
 void RequestHours(int client, char[] auth) {
@@ -192,47 +232,6 @@ public void SQL_WriteWhitelistQuery(Database db, DBResultSet results, const char
 	
 	PrintToServer("[PS] Player %s successfully whitelisted!", auth);
 	delete pack;
-}
-
-public void QueryDBForClient(int client, char[] auth) {
-	
-	char WhitelistReadQuery[512];
-	Format(WhitelistReadQuery, sizeof(WhitelistReadQuery), "SELECT * FROM ps_whitelist WHERE steamid='%s';", auth);
-	
-	DataPack pack = new DataPack();
-	pack.WriteString(auth);
-	pack.WriteCell(client);
-	
-	g_Database.Query(SQL_ReadWhitelistQuery, WhitelistReadQuery, pack);
-}
-
-public void SQL_ReadWhitelistQuery(Database db, DBResultSet results, const char[] error, DataPack pack)
-{
-	pack.Reset();
-	char auth[40];
-	pack.ReadString(auth, sizeof(auth));
-	int client = pack.ReadCell();
-	delete pack;
-	
-	if (db == null || results == null)
-	{
-		LogError("[PS] Error while checking if user %s is whitelisted! %s", auth, error);
-		PrintToServer("[PS] Error while checking if user %s is whitelisted! %s", auth, error);
-		return;
-	}
-	
-	char logResponse[128];
-	Format(logResponse, sizeof(logResponse), "[PS] User %s is not whitelisted!", auth);
-	if (!g_cvWhitelist.BoolValue)
-		Format(logResponse, sizeof(logResponse), "[PS] Whitelist disabled!");
-	
-	if (!results.RowCount) {
-		PrintToServer("%s", logResponse);
-		RequestHours(client, auth);
-		return;
-	}
-	
-	PrintToServer("[PS] User %s is whitelisted!", auth);
 }
 
 public Action Command_CheckWhitelist(int client, int args) {
