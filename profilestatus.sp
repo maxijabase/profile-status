@@ -41,9 +41,9 @@ public void OnPluginStart()
 	
 	//RegAdminCmd("sm_ps_add");
 	//RegAdminCmd("sm_ps_remove");
-	RegAdminCmd("sm_ps_check", Command_CheckWhitelist, "Manually check if a STEAMID is whitelisted.", ADMFLAG_GENERIC);
+	RegAdminCmd("sm_ps_check", Command_CheckWhitelist, ADMFLAG_GENERIC, "Manually check if a STEAMID is whitelisted.");
 	
-	LoadTranslations("hourschecker.phrases");
+	LoadTranslations("profilestatus.phrases");
 	
 	AutoExecConfig(true, "ProfileStatus");
 }
@@ -234,10 +234,53 @@ public void SQL_ReadWhitelistQuery(Database db, DBResultSet results, const char[
 	PrintToServer("[PS] User %s is whitelisted!", auth);
 }
 
-public Action Command_Check(int client, int args) {
+public Action Command_CheckWhitelist(int client, int args) {
 	
+	char arg1[40];
 	
+	if (!GetCmdArg(1, arg1, sizeof(arg1))) {
+		CReplyToCommand(client, "%t", "Command Usage");
+		return Plugin_Handled;
+	}
 	
+	if (!MatchRegex(r_SteamID, arg1)){
+		CReplyToCommand(client, "%t", "Invalid STEAMID");
+		return Plugin_Handled;
+	}
+		
+	DataPack pack = new DataPack();
+	
+	pack.WriteCell(client);
+	pack.WriteString(arg1);
+	
+	char CheckQuery[512];
+	
+	g_Database.Format(CheckQuery, sizeof(CheckQuery), "SELECT * FROM ps_whitelist WHERE steamid='%s';", arg1);
+	g_Database.Query(SQL_CheckQuery, CheckQuery, pack);
+	return Plugin_Handled;
+}
+
+public void SQL_CheckQuery(Database db, DBResultSet results, const char[] error, DataPack pack) {
+	
+	pack.Reset();
+	int client = pack.ReadCell();
+	char auth[40];
+	pack.ReadString(auth, sizeof(auth));
+	delete pack;
+	
+	if (db == null || results == null)
+	{
+		LogError("[PS] Error while issuing check command on %s! %s", auth, error);
+		PrintToServer("[PS] Error while issuing check command on %s! %s", auth, error);
+		return;
+	}
+	
+	if (!results.RowCount) {
+		CPrintToChat(client, "%t", "Check Not Whitelisted", auth);
+		return;
+	}
+	
+	CPrintToChat(client, "%t", "Check Whitelisted", auth);
 }
 
 int GetPlayerHours(char[] responseBody) {

@@ -1,0 +1,50 @@
+"Phrases"
+{
+	
+	"Not Enough Hours"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "You have {1} out of the {2} hours required to join this server!"
+		"es" "¡Tienes {1} de las {2} horas necesarias para unirte a este servidor!"
+		"pt" "Você tem {1} das {2} horas necessárias pra se unir a este servidor!"
+	}
+	
+	"Invisible Hours"
+	{
+		"en" "Error while retrieving your hours! Make sure they're public"
+		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
+		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
+	}
+	
+	"Command Usage"
+	{
+		"en" "{green}[PS]{default} Usage: sm_ps_check <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
+	}
+	
+	"Invalid STEAMID"
+	{
+		"en" "{green}[PS]{default} Invalid STEAMID!"
+		"es" "{green}[PS]{default} ¡STEAMID inválido!"
+		"pt" "{green}[PS]{default} STEAMID inválido!"
+	}
+	
+	"Check Not Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}whitelisted!"
+		"en" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist."
+		"en" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist!"
+	}
+	
+	"Check Not Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {grees}is {default}whitelisted!"
+		"en" "{green}[PS]{default} El Steam ID {gray}{1} {greeb}está {default}en la whitelist."
+		"en" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist!"
+	}
+}
