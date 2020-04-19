@@ -385,6 +385,10 @@ public void SQL_Add_Query(Database db, DBResultSet results, const char[] error, 
 	CPrintToChat(client, "%t", "Successfully Added", auth);
 }
 
+/* Credits to alphaearth for the following GetPlayerHours() snippet.
+	https://forums.alliedmods.net/showthread.php?p=2680553 
+*/
+
 int GetPlayerHours(char[] responseBody) {
 	char str2[2][64];
 	ExplodeString(responseBody, "\"playtime_forever\":", str2, sizeof(str2), sizeof(str2[]));
