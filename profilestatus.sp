@@ -36,7 +36,7 @@ public void OnPluginStart()
 	
 	r_Numbers = CompileRegex("^[0-9]*$");
 	r_ApiKey = CompileRegex("^[0-9A-Z]*$");
-	r_SteamID = CompileRegex("^765611[0-9]{11}$");
+	r_SteamID = CompileRegex("^7656119[0-9]{10}$");
 	
 	RegAdminCmd("sm_ps_add", Command_AddWhitelist, ADMFLAG_GENERIC, "Add a STEAMID manually to the whitelist.");
 	RegAdminCmd("sm_ps_remove", Command_RemoveWhitelist, ADMFLAG_GENERIC, "Remove a STEAMID from the whitelist.");
@@ -49,7 +49,7 @@ public void OnPluginStart()
 
 public void OnMapStart() {
 	
-	if (!IsPluginEnabled())
+	if (!g_cvEnabled.BoolValue)
 		SetFailState("[PS] Plugin disabled!");
 		
 	if (!IsAPIKeyCorrect())
@@ -217,21 +217,19 @@ public void AddPlayerToWhitelist(char[] auth) {
 
 public void SQL_WriteWhitelistQuery(Database db, DBResultSet results, const char[] error, DataPack pack)
 {
-	
 	pack.Reset();
 	char auth[40];
 	pack.ReadString(auth, sizeof(auth));
+	delete pack;
 	
 	if (db == null || results == null)
 	{
 		LogError("[PS] Error while trying to whitelist user %s! %s", auth, error);
 		PrintToServer("[PS] Error while trying to whitelist user %s! %s", auth, error);
-		delete pack;
 		return;
 	}
 	
 	PrintToServer("[PS] Player %s successfully whitelisted!", auth);
-	delete pack;
 }
 
 public Action Command_CheckWhitelist(int client, int args) {
@@ -384,9 +382,9 @@ public void SQL_Add_Query(Database db, DBResultSet results, const char[] error, 
 	CPrintToChat(client, "%t", "Successfully Added", auth);
 }
 
-/* Credits to alphaearth for the following GetPlayerHours() snippet.
-	https://forums.alliedmods.net/showthread.php?p=2680553 
-*/
+/*  Credits to alphaearth for the following GetPlayerHours() snippet.
+ *	https://forums.alliedmods.net/showthread.php?p=2680553 
+ */
 
 int GetPlayerHours(char[] responseBody) {
 	char str2[2][64];
@@ -397,10 +395,6 @@ int GetPlayerHours(char[] responseBody) {
 		return StringToInt(lastString[0]);
 	}
 	return -1;
-}
-
-bool IsPluginEnabled() {
-	return (g_cvEnabled.BoolValue);
 }
 
 bool IsAPIKeyCorrect() {
