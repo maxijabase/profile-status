@@ -16,11 +16,25 @@
 		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
 	}
 	
-	"Command Usage"
+	"Command Check Usage"
 	{
 		"en" "{green}[PS]{default} Usage: sm_ps_check <STEAMID64>"
 		"es" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
 		"pt" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
+	}
+	
+	"Command Remove Usage"
+	{
+		"en" "{green}[PS]{default} Usage: sm_ps_remove <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps_remove <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps_remove <STEAMID64>"
+	}
+	
+	"Command Add Usage"
+	{
+		"en" "{green}[PS]{default} Usage: sm_ps_add <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps_add <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps_add <STEAMID64>"
 	}
 	
 	"Invalid STEAMID"
@@ -35,16 +49,56 @@
 		"#format" "{1:s}"
 		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}whitelisted!"
-		"en" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist."
-		"en" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist!"
 	}
 	
-	"Check Not Whitelisted"
+	"Check Whitelisted"
 	{
 		"#format" "{1:s}"
 		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {grees}is {default}whitelisted!"
-		"en" "{green}[PS]{default} El Steam ID {gray}{1} {greeb}está {default}en la whitelist."
-		"en" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist!"
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist!"
+	}
+	
+	"Successfully Removed"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist com sucesso!"
+	}
+	
+	"Nothing Removed"
+	{
+		
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist!"
+		
+	}
+	
+	"Successfully Added"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist!"
+		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist com sucesso!"
+	}
+	
+	"Nothing Added"
+	{
+		
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist!"
+		
 	}
 }
