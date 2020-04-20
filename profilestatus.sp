@@ -1,12 +1,13 @@
 #include <sourcemod>
 #include <steamworks>
 #include <morecolors>
+#include <halflife>
 #include <stocksoup/version>
 
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0"
+#define PLUGIN_VERSION "1.1"
 
 public Plugin myinfo = 
 {
@@ -21,7 +22,7 @@ public Plugin myinfo =
 
 ConVar g_cvEnabled, g_cvApiKey, g_cvMinHours, g_cvWhitelist;
 Regex r_Numbers, r_ApiKey, r_SteamID;
-Database g_Database = null;
+Database g_Database;
 
 public void OnPluginStart()
 {
@@ -38,9 +39,7 @@ public void OnPluginStart()
 	r_ApiKey = CompileRegex("^[0-9A-Z]*$");
 	r_SteamID = CompileRegex("^7656119[0-9]{10}$");
 	
-	RegAdminCmd("sm_ps_add", Command_AddWhitelist, ADMFLAG_GENERIC, "Add a STEAMID manually to the whitelist.");
-	RegAdminCmd("sm_ps_remove", Command_RemoveWhitelist, ADMFLAG_GENERIC, "Remove a STEAMID from the whitelist.");
-	RegAdminCmd("sm_ps_check", Command_CheckWhitelist, ADMFLAG_GENERIC, "Manually check if a STEAMID is whitelisted.");
+	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Testing");
 	
 	LoadTranslations("profilestatus.phrases");
 	
@@ -51,10 +50,10 @@ public void OnMapStart() {
 	
 	if (!g_cvEnabled.BoolValue)
 		SetFailState("[PS] Plugin disabled!");
-		
+	
 	if (!IsAPIKeyCorrect())
 		SetFailState("[PS] Please set your Steam API Key properly!");
-		
+	
 	if (!AreCvarsNumeric())
 		SetFailState("[PS] Please configure all cvars properly!");
 	
@@ -232,154 +231,113 @@ public void SQL_WriteWhitelistQuery(Database db, DBResultSet results, const char
 	PrintToServer("[PS] Player %s successfully whitelisted!", auth);
 }
 
-public Action Command_CheckWhitelist(int client, int args) {
+public Action Command_Generic(int client, int args) {
 	
-	char arg1[40];
+	char arg1[30], arg2[30];
+	GetCmdArg(1, arg1, sizeof(arg1));
+	GetCmdArg(2, arg2, sizeof(arg2));
 	
-	if (!GetCmdArg(1, arg1, sizeof(arg1))) {
-		CReplyToCommand(client, "%t", "Command Check Usage");
+	if (!StrEqual(arg1, "add", false) && !StrEqual(arg1, "remove", false) && !StrEqual(arg1, "check", false) || StrEqual(arg2, "")){
+		CReplyToCommand(client, "%t", "Command Generic Usage");
 		return Plugin_Handled;
 	}
 	
-	if (!MatchRegex(r_SteamID, arg1)){
+	if (!MatchRegex(r_SteamID, arg2)) {
 		CReplyToCommand(client, "%t", "Invalid STEAMID");
 		return Plugin_Handled;
 	}
-		
+	
+	Command(arg1, arg2, client);
+	return Plugin_Handled;
+}
+
+public void Command(char[] arg1, char[] arg2, int client) {
+	
+	char query[256];
+	
+	if (StrEqual(arg1, "add"))
+		Format(query, sizeof(query), "INSERT INTO ps_whitelist (steamid) VALUES (%s);", arg2);
+	if (StrEqual(arg1, "remove"))
+		Format(query, sizeof(query), "DELETE FROM ps_whitelist WHERE steamid='%s';", arg2);
+	if (StrEqual(arg1, "check"))
+		Format(query, sizeof(query), "SELECT * FROM ps_whitelist WHERE steamid='%s';", arg2);
+	
 	DataPack pack = new DataPack();
 	
 	pack.WriteCell(client);
 	pack.WriteString(arg1);
+	pack.WriteString(arg2);
 	
-	char CheckQuery[512];
+	g_Database.Query(SQL_CommandQuery, query, pack);
 	
-	g_Database.Format(CheckQuery, sizeof(CheckQuery), "SELECT * FROM ps_whitelist WHERE steamid='%s';", arg1);
-	g_Database.Query(SQL_CheckQuery, CheckQuery, pack);
-	return Plugin_Handled;
 }
 
-public void SQL_CheckQuery(Database db, DBResultSet results, const char[] error, DataPack pack) {
+public void SQL_CommandQuery(Database db, DBResultSet results, const char[] error, DataPack pack) {
 	
 	pack.Reset();
 	int client = pack.ReadCell();
-	char auth[40];
-	pack.ReadString(auth, sizeof(auth));
+	char arg1[30], arg2[30];
+	pack.ReadString(arg1, sizeof(arg1));
+	pack.ReadString(arg2, sizeof(arg2));
 	delete pack;
 	
-	if (db == null || results == null)
-	{
-		LogError("[PS] Error while issuing check command on %s! %s", auth, error);
-		PrintToServer("[PS] Error while issuing check command on %s! %s", auth, error);
-		CPrintToChat(client, "[PS] Error while issuing check command on %s! %s", auth, error);
-		return;
-	}
-	
-	if (!results.RowCount) {
-		CPrintToChat(client, "%t", "Check Not Whitelisted", auth);
-		return;
-	}
-	
-	CPrintToChat(client, "%t", "Check Whitelisted", auth);
-}
-
-public Action Command_RemoveWhitelist(int client, int args) {
-	
-	char arg1[40];
-	
-	if (!GetCmdArg(1, arg1, sizeof(arg1))) {
-		CReplyToCommand(client, "%t", "Command Remove Usage");
-		return Plugin_Handled;
-	}
-	
-	if (!MatchRegex(r_SteamID, arg1)){
-		CReplyToCommand(client, "%t", "Invalid STEAMID");
-		return Plugin_Handled;
-	}
+	if (StrEqual(arg1, "add")) {
 		
-	DataPack pack = new DataPack();
-	
-	pack.WriteCell(client);
-	pack.WriteString(arg1);
-	
-	char RemoveQuery[512];
-	
-	g_Database.Format(RemoveQuery, sizeof(RemoveQuery), "DELETE FROM ps_whitelist WHERE steamid='%s';", arg1);
-	g_Database.Query(SQL_RemoveQuery, RemoveQuery, pack);
-	return Plugin_Handled;
-}
-
-public void SQL_RemoveQuery(Database db, DBResultSet results, const char[] error, DataPack pack) {
-	
-	pack.Reset();
-	int client = pack.ReadCell();
-	char auth[40];
-	pack.ReadString(auth, sizeof(auth));
-	delete pack;
-	
-	if (db == null || results == null)
-	{
-		LogError("[PS] Error while issuing remove command on %s! %s", auth, error);
-		PrintToServer("[PS] Error while issuing remove command on %s! %s", auth, error);
-		CPrintToChat(client, "[PS] Error while issuing remove command on %s! %s", auth, error);
-		return;
-	}
-	
-	if (!results.AffectedRows){
-		CPrintToChat(client, "%t", "Nothing Removed", auth);
-		return;
-	}
+		if (db == null) {
+			
+			LogError("[PS] Error while issuing add command on %s! %s", arg2, error);
+			PrintToServer("[PS] Error while issuing add command on %s! %s", arg2, error);
+			CPrintToChat(client, "[PS] Error while issuing add command on %s! %s", arg2, error);
+			return;
+		}
 		
-	CPrintToChat(client, "%t", "Successfully Removed", auth);
-}
-
-public Action Command_AddWhitelist(int client, int args) {
-	
-	char arg1[40];
-	
-	if (!GetCmdArg(1, arg1, sizeof(arg1))) {
-		CReplyToCommand(client, "%t", "Command Add Usage");
-		return Plugin_Handled;
-	}
-	
-	if (!MatchRegex(r_SteamID, arg1)){
-		CReplyToCommand(client, "%t", "Invalid STEAMID");
-		return Plugin_Handled;
-	}
+		if (results == null) {
+			CPrintToChat(client, "%t", "Nothing Added", arg2);
+			return;
+		}
 		
-	DataPack pack = new DataPack();
-	
-	pack.WriteCell(client);
-	pack.WriteString(arg1);
-	
-	char AddQuery[512];
-	
-	g_Database.Format(AddQuery, sizeof(AddQuery), "INSERT INTO ps_whitelist (steamid) VALUES (%s);", arg1);
-	g_Database.Query(SQL_Add_Query, AddQuery, pack);
-	return Plugin_Handled;
-}
-
-public void SQL_Add_Query(Database db, DBResultSet results, const char[] error, DataPack pack) {
-	
-	pack.Reset();
-	int client = pack.ReadCell();
-	char auth[40];
-	pack.ReadString(auth, sizeof(auth));
-	delete pack;
-	
-	if (db == null)
-	{
-		LogError("[PS] Error while issuing add command on %s! %s", auth, error);
-		PrintToServer("[PS] Error while issuing add command on %s! %s", auth, error);
-		CPrintToChat(client, "[PS] Error while issuing add command on %s! %s", auth, error);
+		CPrintToChat(client, "%t", "Successfully Added", arg2);
 		return;
 	}
 	
-	if (results == null) {
-		CPrintToChat(client, "%t", "Nothing Added", auth);
+	if (StrEqual(arg1, "remove")) {
+		
+		if (db == null || results == null)
+		{
+			LogError("[PS] Error while issuing remove command on %s! %s", arg2, error);
+			PrintToServer("[PS] Error while issuing remove command on %s! %s", arg2, error);
+			CPrintToChat(client, "[PS] Error while issuing remove command on %s! %s", arg2, error);
+			return;
+		}
+		
+		if (!results.AffectedRows) {
+			CPrintToChat(client, "%t", "Nothing Removed", arg2);
+			return;
+		}
+		
+		CPrintToChat(client, "%t", "Successfully Removed", arg2);
 		return;
 	}
+	
+	if (StrEqual(arg1, "check")) {
 		
-	CPrintToChat(client, "%t", "Successfully Added", auth);
+		if (db == null || results == null)
+		{
+			LogError("[PS] Error while issuing check command on %s! %s", arg2, error);
+			PrintToServer("[PS] Error while issuing check command on %s! %s", arg2, error);
+			CPrintToChat(client, "[PS] Error while issuing check command on %s! %s", arg2, error);
+			return;
+		}
+		
+		if (!results.RowCount) {
+			CPrintToChat(client, "%t", "Check Not Whitelisted", arg2);
+			return;
+		}
+		
+		CPrintToChat(client, "%t", "Check Whitelisted", arg2);
+		return;
+	}
+	
 }
 
 /*  Credits to alphaearth for the following GetPlayerHours() snippet.
