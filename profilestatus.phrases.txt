@@ -15,28 +15,7 @@
 		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
 		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
 	}
-	
-	"Command Check Usage"
-	{
-		"en" "{green}[PS]{default} Usage: sm_ps_check <STEAMID64>"
-		"es" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
-		"pt" "{green}[PS]{default} Uso: sm_ps_check <STEAMID64>"
-	}
-	
-	"Command Remove Usage"
-	{
-		"en" "{green}[PS]{default} Usage: sm_ps_remove <STEAMID64>"
-		"es" "{green}[PS]{default} Uso: sm_ps_remove <STEAMID64>"
-		"pt" "{green}[PS]{default} Uso: sm_ps_remove <STEAMID64>"
-	}
-	
-	"Command Add Usage"
-	{
-		"en" "{green}[PS]{default} Usage: sm_ps_add <STEAMID64>"
-		"es" "{green}[PS]{default} Uso: sm_ps_add <STEAMID64>"
-		"pt" "{green}[PS]{default} Uso: sm_ps_add <STEAMID64>"
-	}
-	
+		
 	"Invalid STEAMID"
 	{
 		"en" "{green}[PS]{default} Invalid STEAMID!"
@@ -100,5 +79,11 @@
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist!"
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist!"
 		
+	}
+	"Command Generic Usage"
+	{
+		"en" "{green}[PS]{default} Usage: sm_ps <add|remove|check> <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
 	}
 }
