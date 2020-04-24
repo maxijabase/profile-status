@@ -1,0 +1,18 @@
+"Updater"
+{
+    "Information"
+    {
+        "Version"
+        {
+            "Latest"    "1.1"
+        }
+
+        "Notes" "Changes in 0.0.2:"
+        "Notes" "- Fixed issue with GameRules_SetProp on plugin load"
+    }
+
+    "Files"
+    {
+        "Plugin"    "Path_SM/plugins/testcenter.smx"
+    }
+}
