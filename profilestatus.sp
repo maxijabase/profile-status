@@ -1,7 +1,6 @@
 #include <sourcemod>
 #include <steamworks>
 #include <morecolors>
-#include <halflife>
 #include <stocksoup/version>
 
 #pragma semicolon 1
