@@ -6,44 +6,112 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_VERSION "2.0"
 
 public Plugin myinfo =  {
 	
 	name = "[ANY] Profile Status", 
 	author = "ratawar", 
-	description = "Limits server entrance to players with certain amount of hours in that game.", 
+	description = "Limits server entrance to players based on game playtime or VAC/Steam Bans status.", 
 	version = PLUGIN_VERSION, 
 	url = "https://forums.alliedmods.net/member.php?u=282996"
 };
 
 /* Global Handles */
 
-ConVar g_cvEnabled, g_cvApiKey, g_cvMinHours, g_cvWhitelist;
-Regex r_Numbers, r_ApiKey, r_SteamID;
-Database g_Database;
+ConVar
+	g_cvEnabled, 
+	g_cvApiKey;
+ConVar
+	g_cvDatabase;
+ConVar
+	g_cvEnableHourCheck, 
+	g_cvMinHours, 
+	g_cvWhitelist;
+ConVar
+	g_cvEnableBanDetection, 
+	g_cvVACDays, 
+	g_cvVACAmount,
+	g_cvCommunityBan, 
+	g_cvGameBans, 
+	g_cvEconomyBan;
+
+Regex
+	r_Numbers, 
+	r_ApiKey, 
+	r_SteamID;
+
+Database
+g_Database;
+
+/* Global Variables */
+
+char 
+	cAPIKey[64], 
+	cvDatabase[16],
+	EcBan[10];
+	
+int iMinHours, 
+	iVACDays,
+	iVACAmount,
+	iGameBans,
+	iEconomyBan;
+
+/* On Plugin Start */
 
 public void OnPluginStart() {
 	
-	Database.Connect(SQL_ConnectDatabase, "storage-local");
-	
+	/* Plugin Version */
 	CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	
-	g_cvEnabled = CreateConVar("sm_profilestatus_enabled", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvApiKey = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
-	g_cvMinHours = CreateConVar("sm_profilestatus_minhours", "", "Minimum of hours requiered to enter the server.");
-	g_cvWhitelist = CreateConVar("sm_profilestatus_whitelist", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	/* Basic Data */
+	g_cvEnabled 			= CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvApiKey 				= CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
 	
-	r_Numbers = CompileRegex("^[0-9]*$");
-	r_ApiKey = CompileRegex("^[0-9A-Z]*$");
-	r_SteamID = CompileRegex("^7656119[0-9]{10}$");
+	/* Database Name */
+	g_cvDatabase 			= CreateConVar("sm_profilestatus_database", "storage-local", "Hour Check module's database name. Change this value only if you're using another database. (Only SQLite supported.)");
 	
-	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic PS command.");
+	/* Hour Check Module */
+	g_cvEnableHourCheck		= CreateConVar("sm_profilestatus_hourcheck_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvMinHours 			= CreateConVar("sm_profilestatus_minhours", "", "Minimum of hours requiered to enter the server.");
+	g_cvWhitelist 			= CreateConVar("sm_profilestatus_whitelist", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	
+	/* Ban Check Module */
+	g_cvEnableBanDetection 	= CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvVACDays 			= CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
+	g_cvVACAmount 			= CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvCommunityBan 		= CreateConVar("sm_profilestatus_community_ban", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
+	g_cvGameBans 			= CreateConVar("sm_profilestatus_game_bans", "5", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvEconomyBan 			= CreateConVar("sm_profilestatus_economy_bans", "0", 
+							"0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", 
+							_, true, 1.0, true, 2.0);
+	
+	/* RegEx */
+	r_Numbers 				= CompileRegex("^[0-9]*$");
+	r_ApiKey 				= CompileRegex("^[0-9A-Z]*$");
+	r_SteamID 				= CompileRegex("^7656119[0-9]{10}$");
+	
+	/* Global CVAR Assigns */
+
+	g_cvApiKey.GetString(cAPIKey, sizeof(cAPIKey));
+
+	g_cvDatabase.GetString(cvDatabase, sizeof(cvDatabase));
+
+	iMinHours   = g_cvMinHours.IntValue;
+	iVACDays    = g_cvVACDays.IntValue;
+	iVACAmount  = g_cvVACAmount.IntValue;
+	iGameBans   = g_cvGameBans.IntValue;
+	iEconomyBan = g_cvEconomyBan.IntValue;
+	
+	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic Hour Check command.");
 	
 	LoadTranslations("profilestatus.phrases");
 	
 	AutoExecConfig(true, "ProfileStatus");
+
 }
+
+/* On Map Start */
 
 public void OnMapStart() {
 	
@@ -56,17 +124,28 @@ public void OnMapStart() {
 	if (!IsAPIKeyCorrect())
 		SetFailState("[PS] Please set your Steam API Key properly!");
 	
+	if (g_cvEnableHourCheck.BoolValue)
+		Database.Connect(SQL_ConnectDatabase, "storage-local");
+	else
+		PrintToServer("[PS] Hours Check module disabled! Aborting database connection.");
+	
+	if (!g_cvEnableBanDetection.BoolValue)
+		PrintToServer("[PS] Ban Detection module disabled!");
+		
 }
+
+/* Database connection and tables creation */
 
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
 	if (db == null)
 	{
-		LogError("[PS] Database connection error! %s", error);
-		PrintToServer("[PS] Database connection error! %s", error);
+		LogError("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
+		PrintToServer("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		return;
 	}
-	PrintToServer("[PS] Database connection successful!", error);
+	
+	PrintToServer("[PS] Database connection to \"%s\" successful!", cvDatabase);
 	g_Database = db;
 	CreateTable();
 }
@@ -93,13 +172,7 @@ public void SQL_CreateTable(Database db, DBResultSet results, const char[] error
 	PrintToServer("[PS] Tables successfully created or were already created!");
 }
 
-public void OnClientAuthorized(int client) {
-	
-	char auth[40];
-	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
-	
-	QueryDBForClient(client, auth);
-}
+/* Hour Check Module */
 
 public void QueryDBForClient(int client, char[] auth) {
 	
@@ -128,7 +201,7 @@ public void SQL_QueryDBForClient(Database db, DBResultSet results, const char[] 
 	}
 	
 	char logResponse[128];
-	Format(logResponse, sizeof(logResponse), "[PS] User %s is not whitelisted!", auth);
+	Format(logResponse, sizeof(logResponse), "[PS] User %s is not whitelisted! Checking hours...", auth);
 	
 	if (!g_cvWhitelist.BoolValue)
 		Format(logResponse, sizeof(logResponse), "[PS] Whitelist disabled!");
@@ -151,12 +224,9 @@ void RequestHours(int client, char[] auth) {
 
 Handle CreateRequest_RequestHours(int client, char[] auth) {
 	
-	char apikey[40];
-	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
-	
 	char request_url[512];
 	
-	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&include_played_free_games=1&appids_filter[0]=%i&steamid=%s&format=json", apikey, GetAppID(), auth);
+	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&include_played_free_games=1&appids_filter[0]=%i&steamid=%s&format=json", cAPIKey, GetAppID(), auth);
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
 	
 	SteamWorks_SetHTTPRequestContextValue(request, client);
@@ -172,7 +242,6 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 		return;
 	}
 	
-	int MinHours = g_cvMinHours.IntValue;
 	int bufferSize;
 	
 	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
@@ -184,13 +253,15 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 	int playedTime = GetPlayerHours(responseBody);
 	int totalPlayedTime = playedTime / 60;
 	
+	PrintToServer("hours %i", GetPlayerHours(responseBody) / 60);
+	
 	if (!totalPlayedTime) {
 		KickClient(client, "%t", "Invisible Hours");
 		return;
 	}
 	
-	if (totalPlayedTime < MinHours) {
-		KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, MinHours);
+	if (totalPlayedTime < iMinHours) {
+		KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, iMinHours);
 		return;
 	}
 	
@@ -338,28 +409,237 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 	
 }
 
-/*  Credits to alphaearth for the following GetPlayerHours() snippet.
- *	https://forums.alliedmods.net/showthread.php?p=2680553 
- */
-
 int GetPlayerHours(char[] responseBody) {
-	char str2[2][64];
-	ExplodeString(responseBody, "\"playtime_forever\":", str2, sizeof(str2), sizeof(str2[]));
-	if (!StrEqual(str2[1], "")) {
-		char lastString[2][64];
-		ExplodeString(str2[1], "}", lastString, sizeof(lastString), sizeof(lastString[]));
-		return StringToInt(lastString[0]);
+	
+	char str[8][64];
+	
+	ExplodeString(responseBody, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 8; i++) {
+		
+		if (StrContains(str[i], "playtime_forever") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return StringToInt((str2[1]));
+			
+		}
 	}
 	return -1;
 }
 
-bool IsAPIKeyCorrect() {
+/* Ban Check Module */
+
+void RequestBans(int client, char[] auth) {
+	
+	Handle request = CreateRequest_RequestBans(client, auth);
+	SteamWorks_SendHTTPRequest(request);
+	
+}
+
+Handle CreateRequest_RequestBans(int client, char[] auth) {
 	
 	char apikey[40];
 	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
-	if (MatchRegex(r_ApiKey, apikey) == -1)
-		return false;
 	
+	char request_url[512];
+	
+	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=%s&steamids=%s", apikey, auth);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPCallbacks(request, RequestBans_OnHTTPResponse);
+	return request;
+}
+
+public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+	
+	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		PrintToServer("[PS] HTTP Bans Request failure!");
+		delete request;
+		return;
+	}
+	
+	int bufferSize;
+	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
+	char[] responseBodyBans = new char[bufferSize];
+	SteamWorks_GetHTTPResponseBodyData(request, responseBodyBans, bufferSize);
+	delete request;
+	
+	if (g_cvEnableBanDetection.BoolValue) {
+		
+		if (IsVACBanned(responseBodyBans)) {
+			
+			if (!GetDaysSinceLastVAC(responseBodyBans) || !GetVACAmount(responseBodyBans))
+				KickClient(client, "%t", "VAC Kicked");
+			else if (GetDaysSinceLastVAC(responseBodyBans) < iVACDays)
+				KickClient(client, "%t", "VAC Kicked Days", iVACDays);
+			else if (GetVACAmount(responseBodyBans) > iVACAmount)
+				KickClient(client, "%t", "VAC Kicked Amount", iVACAmount);
+		}
+		
+		if (IsCommunityBanned(responseBodyBans))			
+			if (g_cvCommunityBan.BoolValue)
+				KickClient(client, "%t", "Community Ban Kicked");
+		
+		if (GetGameBans(responseBodyBans) > iGameBans)
+				KickClient(client, "%t", "Game Bans Exceeded", iGameBans);
+				
+		GetEconomyBans(responseBodyBans);
+		
+		if (iEconomyBan == 1)
+			if (StrContains(EcBan, "banned", false) != -1)
+				KickClient(client, "%t", "Economy Ban Kicked");
+		if (iEconomyBan == 2)
+			if (StrContains(EcBan, "banned", false) != -1 || StrContains(EcBan, "probation", false) != -1)
+				KickClient(client, "%t", "Economy Ban/Prob Kicked");
+				
+			}
+
+}
+
+int GetDaysSinceLastVAC(char[] responseBodyBans) {
+	
+	char str[7][64];
+	
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 7; i++) {
+		
+		if (StrContains(str[i], "DaysSinceLastBan") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return StringToInt((str2[1]));
+			
+		}
+	}
+	return -1;
+}
+
+int GetVACAmount(char[] responseBodyBans) {
+	
+	
+	char str[7][64];
+	
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 7; i++) {
+		
+		if (StrContains(str[i], "NumberOfVACBans") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return StringToInt((str2[1]));
+			
+		}
+	}
+	return -1;
+}
+
+int GetGameBans(char[] responseBodyBans) {
+	
+	char str[7][64];
+	
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 7; i++) {
+		
+		if (StrContains(str[i], "NumberOfGameBans") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return StringToInt((str2[1]));
+			
+		}
+	}
+	return -1;
+}
+
+bool IsVACBanned(char[] responseBodyBans) {
+	
+	char str[10][64];
+	
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 7; i++) {
+		
+		if (StrContains(str[i], "VACBanned") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return (StrEqual(str2[1], "false")) ? false : true;
+			
+		}
+	}
+	return false;
+} 
+
+bool IsCommunityBanned(char[] responseBodyBans) {
+	
+	char str[10][64];
+	
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 7; i++) {
+		
+		if (StrContains(str[i], "CommunityBanned") != -1) {
+			
+			char str2[2][32];
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			
+			return (StrEqual(str2[1], "false")) ? false : true;
+			
+		}
+	}
+	return false;
+}
+
+void GetEconomyBans(char[] responseBodyBans) { 
+    char str[7][64];
+    
+    ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
+    
+    for (int i = 0; i < 7; i++) {
+        
+        if (StrContains(str[i], "EconomyBan") != -1) {
+            
+            char str2[2][32];
+            ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+            strcopy(EcBan, 15, str2[1]);
+            
+        }
+    }
+    
+}
+
+/* On Client Authorized */
+
+public void OnClientAuthorized(int client) {
+	
+	char auth[40];
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
+	
+	if (g_cvEnableHourCheck.BoolValue)
+		QueryDBForClient(client, auth);
+	
+	if (g_cvEnableBanDetection.BoolValue)
+		RequestBans(client, auth);
+	
+}
+
+/* Extra Checks */
+
+bool IsAPIKeyCorrect() {
+	
+	if (StrEqual(cAPIKey, "", false && MatchRegex(r_ApiKey, cAPIKey) == -1 ))
+		return false;
+		
 	return true;
 }
 
@@ -372,4 +652,4 @@ bool AreCvarsNumeric() {
 		return false;
 	}
 	return true;
-} 
+}
