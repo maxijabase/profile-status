@@ -1,7 +1,6 @@
 #include <sourcemod>
 #include <steamworks>
 #include <morecolors>
-#include <halflife>
 #include <stocksoup/version>
 
 #pragma semicolon 1
@@ -20,45 +19,60 @@ public Plugin myinfo =  {
 
 /* Global Handles */
 
-ConVar g_cvEnabled, g_cvApiKey;
-ConVar g_cvDatabase;
-ConVar g_cvEnableHourCheck, g_cvMinHours, g_cvWhitelist; 
-ConVar g_cvEnableVACDetection, g_cvVACDays, g_cvVACAmount, g_cvCommunityBans, g_cvGameBans, g_cvEconomyBan;
+ConVar 
+	g_cvEnabled, 
+	g_cvApiKey;
+ConVar 
+	g_cvDatabase;
+ConVar 
+	g_cvEnableHourCheck, 
+	g_cvMinHours, 
+	g_cvWhitelist;
+ConVar 
+	g_cvEnableBanDetection, 
+	g_cvVACDays, 
+	g_cvVACAmount;
+	g_cvCommunityBans, 
+	g_cvGameBans, 
+	g_cvEconomyBan;
 
-Regex r_Numbers, r_ApiKey, r_SteamID;
-Database g_Database;
+Regex 
+	r_Numbers, 
+	r_ApiKey, 
+	r_SteamID;
+	
+Database 
+	g_Database;
 
 public void OnPluginStart() {
 	
-	/* Plugin Version */	
+	/* Plugin Version */
 	CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	
 	/* Basic Data */
-	g_cvEnabled = CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvApiKey = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
+	g_cvEnabled            = CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvApiKey             = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
 	
 	/* Database Name */
-	g_cvDatabase = CreateConVar("sm_profilestatus_database", "storage-local", "Database name for connection. (Only SQLite supported.)")
+	g_cvDatabase           = CreateConVar("sm_profilestatus_database", "storage-local", "Database name for connection. Change this value only if you're using another database. (Only SQLite supported.)")
 	
 	/* Hour Check Module */
-	g_cvEnableHourCheck = CreateConVar("sm_profilestatus_hourcheck_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvMinHours = CreateConVar("sm_profilestatus_minhours", "", "Minimum of hours requiered to enter the server.");
-	g_cvWhitelist = CreateConVar("sm_profilestatus_whitelist", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvEnableHourCheck    = CreateConVar("sm_profilestatus_hourcheck_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvMinHours           = CreateConVar("sm_profilestatus_minhours", "", "Minimum of hours requiered to enter the server.");
+	g_cvWhitelist          = CreateConVar("sm_profilestatus_whitelist", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
-	/* VAC Check Module */
-	g_cvEnableVACDetection = CreateConVar("sm_profilestatus_vac_enable", "1", "Enable VAC Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvVACDays = CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
-	g_cvVACAmount = CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
-	
-	/* Other Bans Module */
-	g_cvCommunityBans = CreateConVar("sm_profilestatus_community_bans", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
-	g_cvGameBans = CreateConVar("sm_profilestatus_game_bans", "0", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
-	g_cvEconomyBan = CreateConVar("sm_profilestatus_economy_bans", "0", "0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.");
+	/* Ban Check Module */
+	g_cvEnableBanDetection = CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvVACDays            = CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
+	g_cvVACAmount          = CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvCommunityBans      = CreateConVar("sm_profilestatus_community_bans", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
+	g_cvGameBans           = CreateConVar("sm_profilestatus_game_bans", "5", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvEconomyBan         = CreateConVar("sm_profilestatus_economy_bans", "0", "0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.");
 	
 	/* RegEx */
-	r_Numbers = CompileRegex("^[0-9]*$");
-	r_ApiKey = CompileRegex("^[0-9A-Z]*$");
-	r_SteamID = CompileRegex("^7656119[0-9]{10}$");
+	r_Numbers              = CompileRegex("^[0-9]*$");
+	r_ApiKey               = CompileRegex("^[0-9A-Z]*$");
+	r_SteamID              = CompileRegex("^7656119[0-9]{10}$");
 	
 	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Testing");
 	
@@ -66,6 +80,16 @@ public void OnPluginStart() {
 	
 	AutoExecConfig(true, "ProfileStatus");
 }
+
+/* Global CVAR Assigns */
+
+char APIKEY[64];
+GetConVarString(g_cvApiKey, APIKEY, sizeof(APIKEY));
+
+char cvDatabase[32];
+GetConVarString(g_cvDatabase, cvDatabase, sizeof(cvDatabase));
+
+/* Beggining of the Plugin */
 
 public void OnMapStart() {
 	
@@ -78,21 +102,26 @@ public void OnMapStart() {
 	if (!IsAPIKeyCorrect())
 		SetFailState("[PS] Please set your Steam API Key properly!");
 	
-	if (!g_cvWhitelist.BoolValue) {
-		PrintToServer("[PS] Whitelist enabled! Attempting database connection.");
+	if (g_cvEnableHourCheck.BoolValue)		
 		Database.Connect(SQL_ConnectDatabase, "storage-local");
-	} else 
-		PrintToServer("[PS] Whitelist disabled! Aborting database connection.");
+	else
+		PrintToServer("[PS] Hours Check module disabled! Aborting database connection.");
+
+	if (!g_cvEnableBanDetection.BoolValue)
+		PrintToServer("[PS] Ban Detection module disabled!")
+
+
 }
 
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
 	if (db == null)
 	{
-		LogError("[PS] Database connection error! %s", error);
-		PrintToServer("[PS] Database connection error! %s", error);
+		LogError("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
+		PrintToServer("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		return;
 	}
+	
 	PrintToServer("[PS] Database connection successful!", error);
 	g_Database = db;
 	CreateTable();
@@ -358,14 +387,6 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 }
 
 
-public void OnClientAuthorized(int client) {
-	
-	char auth[40];
-	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
-	
-	QueryDBForClient(client, auth);
-	
-}
 
 /*  Credits to alphaearth for the following GetPlayerHours() snippet.
  *	https://forums.alliedmods.net/showthread.php?p=2680553 
@@ -401,37 +422,78 @@ bool AreCvarsNumeric() {
 		return false;
 	}
 	return true;
-} 
+}
 
-stock bool HasVAC(char[] responseBodyVAC) {
+public void OnClientAuthorized(int client) {
 	
-	char str[7][64];
+	char auth[40];
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
-	ExplodeString(responseBodyVAC, ",", str, sizeof(str), sizeof(str[]));
+	if (g_cvEnableHourCheck.BoolValue)
+		QueryDBForClient(client, auth);
 	
-	for (int i = 0; i < 7; i++) {
+	RequestBans(client, auth);
+
+}
+
+void RequestBans(int client, char[] auth) {
+	
+	Handle request = CreateRequest_RequestBans(client, auth);
+	SteamWorks_SendHTTPRequest(request);
+	
+}
+
+Handle CreateRequest_RequestBans(int client, char[] auth) {
+	
+	char apikey[40];
+	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
+	
+	char request_url[512];
+	
+	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=%s&steamids=%s", apikey, auth);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPCallbacks(request, RequestBans_OnHTTPResponse);
+	return request;
+}
+
+public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+	
+	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		PrintToServer("[PS] HTTP Bans Request failure!");
+		delete request;
+		return;
+	}
+	
+	int bufferSize;
+	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
+	char[] responseBodyBans = new char[bufferSize];
+	SteamWorks_GetHTTPResponseBodyData(request, responseBodyBans, bufferSize);
+	delete request;
+	
+	int VACDays = g_cvVACDays.IntValue;
+	
+	if (g_cvEnableBanDetection.BoolValue) {
+	
+		if (!GetDaysSinceLastVAC(responseBodyBans)) 
+			KickClient(client, "%t", "No VAC Allowed");
+		else if (GetDaysSinceLastVAC(responseBodyBans) < VACDays)
+			KickClient(client, "%t", "No VAC Allowed in Days", VACDays);
+			
 		
-		if (StrContains(str[i], "VACBanned") != -1) {
-			
-			char str2[2][32];
-			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
-			
-			PrintToServer(str2[1]);
-			return (StrEqual(str2[1], "false")) ? false : true;
-			
-		}
 	}
 }
 
-stock int VACDays(char[] responseBodyVAC) {
+int GetDaysSinceLastVAC(char[] responseBodyBans) {
 	
 	char str[7][64];
 	
-	ExplodeString(responseBodyVAC, ",", str, sizeof(str), sizeof(str[]));
+	ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
 	
 	for (int i = 0; i < 7; i++) {
 		
-		if (StrContains(str[i], "NumberOfVACBans") != -1) {
+		if (StrContains(str[i], "DaysSinceLastBan") != -1) {
 			
 			char str2[2][32];
 			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
