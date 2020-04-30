@@ -1,0 +1,137 @@
+"Phrases"
+{
+	
+	"Not Enough Hours"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "You have {1} out of the {2} hours required to join this server!"
+		"es" "¡Tienes {1} de las {2} horas necesarias para unirte a este servidor!"
+		"pt" "Você tem {1} das {2} horas necessárias pra se unir a este servidor!"
+	}
+	
+	"Invisible Hours"
+	{
+		"en" "Error while retrieving your hours! Make sure they're public"
+		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
+		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
+	}
+		
+	"Invalid STEAMID"
+	{
+		"en" "{green}[PS]{default} Invalid STEAMID!"
+		"es" "{green}[PS]{default} ¡STEAMID inválido!"
+		"pt" "{green}[PS]{default} STEAMID inválido!"
+	}
+	
+	"Check Not Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist!"
+	}
+	
+	"Check Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist!"
+	}
+	
+	"Successfully Removed"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist com sucesso!"
+	}
+	
+	"Nothing Removed"
+	{
+		
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist!"
+		
+	}
+	
+	"Successfully Added"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist!"
+		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist com sucesso!"
+	}
+	
+	"Nothing Added"
+	{
+		
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist!"
+		
+	}
+	"Command Generic Usage"
+	{
+		"en" "{green}[PS]{default} Usage: sm_ps <add|remove|check> <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
+	}
+	"VAC Kicked"
+	{
+		"en" "This server disallows VAC Banned players."
+		"es" "Este servidor prohíbe jugadores con VAC Bans."
+		"pt" "Esse servidor proíbe jogadores com VAC Ban."
+	}
+	"VAC Kicked Days"
+	{
+		"format" "{1:i}"
+		
+		"en" "This server disallows players with less than {1} days since their last VAC Ban."
+		"es" "Este servidor prohíbe jugadores con menos de {1} días desde su último VAC Ban."
+		"pt" "Esse servidor proíbe jogadores com menos de {1} dias desde o seu último VAC Ban."
+	}
+	"VAC Kicked Amount"
+	{
+		"format" "{1:i}"
+		
+		"en" "This server disallows players with more than {1} VAC Bans."
+		"es" "Este servidor prohíbe jugadores con más de {1} VAC Bans."
+		"pt" "Esse servidor proíbe jogadores com mais de {1} VAC Bans."
+	}
+	"Community Ban Kicked"
+	{
+		"en" "This server disallows Steam Community Banned players."
+		"es" "Este servidor prohíbe jugadores baneados de la Comunidad de Steam."
+		"pt" "Esse servidor proíbe jogadores banidos da Comunidade de Steam."
+	}
+	"Game Bans Exceeded"
+	{
+		"format" "{1:i}"
+		
+		"en" "This server disallows players with more than {1} Game Bans."
+		"es" "Este servidor prohíbe jugadores con más de {1} Game Bans."
+		"pt" "Esse servidor proíbe jogadores com mais de {1} Game Bans."
+	}
+	"Economy Ban Kicked"
+	{
+		"en" "This server disallows Trade Banned players."
+		"es" "Este servidor prohíbe jugadores con Trade Ban."
+		"pt" "Esse servidor proíbe jogadores com Trade Ban."
+	}
+	"Economy Ban/Prob Kicked"
+	{
+		"en" "This server disallows players with Trade Ban and Probation states."
+		"es" "Este servidor prohíbe jugadores en situación de Trade Ban o Probation."
+		"pt" "Esse servidor proíbe jogadores em situação de Trade Ban ou Probation."
+	}
+}
