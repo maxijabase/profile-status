@@ -35,6 +35,14 @@
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}ban whitelisted!"
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de bans."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos bans!"
+	}
+	"Level Check Not Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de niveles."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos níveis!"
 	}	
 	"Hour Check Whitelisted"
 	{
@@ -52,6 +60,14 @@
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de bans."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos bans!"
 	}
+	"Level Check Whitelisted"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de niveles."
+		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos níveis!"
+	}
 	"Successfully Hour Removed"
 	{
 		"#format" "{1:s}"
@@ -67,6 +83,14 @@
 		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
 		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
 		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
+	}
+	"Successfully Level Removed"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the level whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de niveles con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist dos níveis com sucesso!"
 	}
 	"Nothing Hour Removed"
 	{
@@ -84,6 +108,14 @@
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de bans!"
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos bans!"
 	}
+	"Nothing Ban Removed"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in level whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos níveis!"
+	}
 	"Successfully Hour Added"
 	{
 		"#format" "{1:s}"
@@ -99,6 +131,14 @@
 		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the bans whitelist!"
 		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de bans!"
 		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos bans com sucesso!"
+	}
+	"Successfully Level Added"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the level whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos níveis com sucesso!"
 	}	
 	"Nothing Hour Added"
 	{
@@ -116,6 +156,14 @@
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in bans whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de bans!"
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos bans!"
+	}
+	"Nothing Level Added"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in level whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos níveis!"
 	}
 	"Command Generic Usage"
 	{
@@ -171,8 +219,6 @@
 		"es" "Este servidor prohíbe jugadores en situación de Trade Ban o Probation."
 		"pt" "Esse servidor proíbe jogadores em situação de Trade Ban ou Probation."
 	}
-<<<<<<< Updated upstream
-=======
 	"Invisible Level"
 	{
 		"en" "Error while retrieving your Steam level! Make sure your profile is public."
@@ -213,5 +259,4 @@
 		"es" "{green}[PS]{default} ¡Esta tabla está vacía!"
 		"pt" "{green}[PS]{default} Esta tabela está vazia!"
 	}
->>>>>>> Stashed changes
 }

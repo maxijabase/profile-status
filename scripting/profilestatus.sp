@@ -3,24 +3,22 @@
 #include <morecolors>
 #include <stocksoup/version>
 #include <profilestatus>
+#include <autoexecconfig>
 
 #pragma semicolon 1
 #pragma newdecls required
 
-<<<<<<< Updated upstream
-#define PLUGIN_VERSION "2.2"
-=======
 #define PLUGIN_VERSION "2.3"
 
->>>>>>> Stashed changes
 #define CHOICE1 "hoursTable"
 #define CHOICE2 "bansTable"
+#define CHOICE3 "levelTable"
 
 public Plugin myinfo = {
 	
 	name = "[ANY] Profile Status", 
 	author = "ratawar", 
-	description = "Limits server entrance to players based on game playtime or VAC/Steam Bans status.", 
+	description = "Limits server entrance to players.", 
 	version = PLUGIN_VERSION, 
 	url = "https://forums.alliedmods.net/showthread.php?p=2697650"
 };
@@ -47,12 +45,6 @@ ConVar
 	g_cvCommunityBan, 
 	g_cvGameBans, 
 	g_cvEconomyBan;
-<<<<<<< Updated upstream
-
-static Regex
-	r_ApiKey, 
-	r_SteamID;
-=======
 	
 ConVar
 	g_cvEnableLevelCheck,
@@ -63,7 +55,6 @@ ConVar
 	
 ConVar
 	g_cvEnablePrivateProfileCheck;
->>>>>>> Stashed changes
 
 Database
 	g_Database;
@@ -72,8 +63,11 @@ Database
 
 static char
 	cAPIKey[64], 
-	cvDatabase[16], 
+	cvDatabase[64], 
 	EcBan[10];
+	
+char DBDRIVER[16];
+bool g_bIsLite;
 
 int minHours, 
 	vacDays, 
@@ -82,7 +76,7 @@ int minHours,
 	economyBan;
 	
 static int 
-	c = 2;
+	c = 3;
 
 //}
 
@@ -90,43 +84,28 @@ static int
 
 public void OnPluginStart() {
 	
+	/* Setting file */
+	
+	AutoExecConfig_SetCreateFile(true);
+	AutoExecConfig_SetFile("ProfileStatus");
+	
 	/* Plugin Version */
-	CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+	AutoExecConfig_CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	
 	/* Basic Data */
-<<<<<<< Updated upstream
-	g_cvEnable 				 = CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvApiKey  			 = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
-	
-	/* Database Name */
-	g_cvDatabase 			 = CreateConVar("sm_profilestatus_database", "storage-local", 
-											"Hour Check module's database name. Change this value only if you're using another database. (Only SQLite supported.)");
-=======
 	g_cvEnable 				 = AutoExecConfig_CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvApiKey  			 = AutoExecConfig_CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey)", FCVAR_PROTECTED);
 	
 	/* Database Name */
 	g_cvDatabase 			 = AutoExecConfig_CreateConVar("sm_profilestatus_database", "storage-local", "Database name. Change this value only if you're using another database set in databases.cfg");
->>>>>>> Stashed changes
 	
 	/* Hour Check Module */
-	g_cvEnableHourCheck 	 = CreateConVar("sm_profilestatus_hours_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvMinHours 			 = CreateConVar("sm_profilestatus_hours_minhours", "", "Minimum of hours requiered to enter the server.");
-	g_cvHoursWhitelistEnable = CreateConVar("sm_profilestatus_hours_whitelist_enable", "1", "Enable Hours Check Whitelist?");
-	g_cvHoursWhitelistAuto   = CreateConVar("sm_profilestatus_hours_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvEnableHourCheck 	 = AutoExecConfig_CreateConVar("sm_profilestatus_hours_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvMinHours 			 = AutoExecConfig_CreateConVar("sm_profilestatus_hours_minhours", "", "Minimum of hours requiered to enter the server.");
+	g_cvHoursWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_hours_whitelist_enable", "1", "Enable Hours Check Whitelist?");
+	g_cvHoursWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_hours_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
 	/* Ban Check Module */
-<<<<<<< Updated upstream
-	g_cvEnableBanDetection   = CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvBansWhitelist 		 = CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvVACDays 			 = CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
-	g_cvVACAmount 			 = CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
-	g_cvCommunityBan 		 = CreateConVar("sm_profilestatus_community_ban", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
-	g_cvGameBans 			 = CreateConVar("sm_profilestatus_game_bans", "5", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
-	g_cvEconomyBan 			 = CreateConVar("sm_profilestatus_economy_bans", "0", 
-											"0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", 
-											_, true, 1.0, true, 2.0);
-=======
 	g_cvEnableBanDetection   = AutoExecConfig_CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvBansWhitelist 		 = AutoExecConfig_CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvVACDays 			 = AutoExecConfig_CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
@@ -141,7 +120,6 @@ public void OnPluginStart() {
 	g_cvLevelWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvMinLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_minlevel", "", "Minimum level required to enter the server.");
 	g_cvMaxLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_maxlevel", "", "Maximum level tolerated to enter the server (can be left blank for no maximum).");
->>>>>>> Stashed changes
 	
 	/* Private Profile Check Module */
 	
@@ -151,7 +129,8 @@ public void OnPluginStart() {
 	
 	LoadTranslations("profilestatus.phrases");
 	
-	AutoExecConfig(true, "ProfileStatus");
+	AutoExecConfig_ExecuteFile();
+	AutoExecConfig_CleanFile();
 	
 }
 
@@ -180,7 +159,7 @@ public void OnConfigsExecuted() {
 		PrintToServer("[PS] No usage of database detected! Aborting database connection.");
 }
 
-/* Database connection and tables creation */
+/* Database connection, driver check and tables creation */
 
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
@@ -193,23 +172,62 @@ public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
 	PrintToServer("[PS] Database connection to \"%s\" successful!", cvDatabase);
 	g_Database = db;
+	GetDriver();
 	CreateTable();
+}
+
+public void GetDriver() {
+	
+	SQL_ReadDriver(g_Database, DBDRIVER, sizeof(DBDRIVER));
+	g_bIsLite = strcmp(DBDRIVER, "sqlite") == 0 ? true : false;
+	
 }
 
 public void CreateTable() {
 	
 	char sQuery1[256];
 	char sQuery2[256];
+	char sQuery3[256];
+	
+	if (g_bIsLite) {
+		StrCat(sQuery1, sizeof(sQuery1), "CREATE TABLE IF NOT EXISTS ps_whitelist(");
+		StrCat(sQuery1, sizeof(sQuery1), "entry INTEGER PRIMARY KEY, ");
+		StrCat(sQuery1, sizeof(sQuery1), "steamid VARCHAR(17), ");
+		StrCat(sQuery1, sizeof(sQuery1), "unique (steamid));");
+		
+		StrCat(sQuery2, sizeof(sQuery2), "CREATE TABLE IF NOT EXISTS ps_whitelist_bans(");
+		StrCat(sQuery2, sizeof(sQuery2), "entry INTEGER PRIMARY KEY, ");
+		StrCat(sQuery2, sizeof(sQuery2), "steamid VARCHAR(17), ");
+		StrCat(sQuery2, sizeof(sQuery2), "unique (steamid));");
+		
+		StrCat(sQuery3, sizeof(sQuery3), "CREATE TABLE IF NOT EXISTS ps_whitelist_level(");
+		StrCat(sQuery3, sizeof(sQuery3), "entry INTEGER PRIMARY KEY, ");
+		StrCat(sQuery3, sizeof(sQuery3), "steamid VARCHAR(17), ");
+		StrCat(sQuery3, sizeof(sQuery3), "unique (steamid));");
+		
+		g_Database.Query(SQL_CreateTable, sQuery1);
+		g_Database.Query(SQL_CreateTable, sQuery2);
+		g_Database.Query(SQL_CreateTable, sQuery3);
+		return;
+	}
 	StrCat(sQuery1, sizeof(sQuery1), "CREATE TABLE IF NOT EXISTS ps_whitelist(");
-	StrCat(sQuery1, sizeof(sQuery1), "entry INTEGER PRIMARY KEY, ");
-	StrCat(sQuery1, sizeof(sQuery1), "steamid VARCHAR(17), ");
-	StrCat(sQuery1, sizeof(sQuery1), "unique (steamid));"); 
+	StrCat(sQuery1, sizeof(sQuery1), "entry INT NOT NULL AUTO_INCREMENT, ");
+	StrCat(sQuery1, sizeof(sQuery1), "steamid VARCHAR(17) UNIQUE, ");
+	StrCat(sQuery1, sizeof(sQuery1), "PRIMARY KEY (entry));");
+	
 	StrCat(sQuery2, sizeof(sQuery2), "CREATE TABLE IF NOT EXISTS ps_whitelist_bans(");
-	StrCat(sQuery2, sizeof(sQuery2), "entry INTEGER PRIMARY KEY, ");
-	StrCat(sQuery2, sizeof(sQuery2), "steamid VARCHAR(17), ");
-	StrCat(sQuery2, sizeof(sQuery2), "unique (steamid));");
+	StrCat(sQuery2, sizeof(sQuery2), "entry INT NOT NULL AUTO_INCREMENT, ");
+	StrCat(sQuery2, sizeof(sQuery2), "steamid VARCHAR(17) UNIQUE, ");
+	StrCat(sQuery2, sizeof(sQuery2), "PRIMARY KEY (entry));");
+	
+	StrCat(sQuery3, sizeof(sQuery3), "CREATE TABLE IF NOT EXISTS ps_whitelist_level(");
+	StrCat(sQuery3, sizeof(sQuery3), "entry INT NOT NULL AUTO_INCREMENT, ");
+	StrCat(sQuery3, sizeof(sQuery3), "steamid VARCHAR(17) UNIQUE, ");
+	StrCat(sQuery3, sizeof(sQuery3), "PRIMARY KEY (entry));");
+	
 	g_Database.Query(SQL_CreateTable, sQuery1);
 	g_Database.Query(SQL_CreateTable, sQuery2);
+	g_Database.Query(SQL_CreateTable, sQuery3);	
 }
 
 public void SQL_CreateTable(Database db, DBResultSet results, const char[] error, any data) {
@@ -221,7 +239,7 @@ public void SQL_CreateTable(Database db, DBResultSet results, const char[] error
 		return;
 	}
 	
-	c -= 1;
+	c--;
 	if (!c) PrintToServer("[PS] Tables successfully created or were already created!");
 }
 
@@ -252,7 +270,7 @@ public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char
 		PrintToServer("[PS] Error while checking if user %s is hour whitelisted! %s", auth, error);
 		return;
 	}
-
+	
 	if (!results.RowCount) {
 		
 		RequestHours(client, auth);
@@ -303,19 +321,6 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 		return;
 	}
 	
-<<<<<<< Updated upstream
-	if (totalPlayedTime < iMinHours) {
-		KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, iMinHours);
-		return;
-	}
-	
-	char auth[40];
-	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
-	
-	if (!g_cvHoursWhitelistAuto.BoolValue) {
-		PrintToServer("[PS] Player passed hour check, but will not be whitelisted!");
-		return;
-=======
 	if (minHours != 0) {
 		if (totalPlayedTime < minHours) {
 			KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, minHours);
@@ -327,10 +332,7 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 		char auth[40];
 		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 		AddPlayerToHoursWhitelist(auth);
->>>>>>> Stashed changes
 	}
-	
-	AddPlayerToWhitelist(auth);
 }
 
 public void AddPlayerToHoursWhitelist(char[] auth) {
@@ -363,7 +365,7 @@ public void SQL_AddPlayerToHoursWhitelist(Database db, DBResultSet results, cons
 
 /* Ban Check Module */
 
-void QueryBansWhitelist(int client, char[] auth) {
+public void QueryBansWhitelist(int client, char[] auth) {
 	
 	char BansWhitelistQuery[256];
 	Format(BansWhitelistQuery, sizeof(BansWhitelistQuery), "SELECT * FROM ps_whitelist_bans WHERE steamid='%s'", auth);
@@ -409,7 +411,7 @@ void RequestBans(int client, char[] auth) {
 Handle CreateRequest_RequestBans(int client, char[] auth) {
 	
 	char apikey[40];
-	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
+	g_cvApiKey.GetString(apikey, sizeof(apikey));
 	
 	char request_url[512];
 	
@@ -467,8 +469,6 @@ public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bReque
 	
 }
 
-<<<<<<< Updated upstream
-=======
 /* Steam Level Check Module */
 
 public void QueryLevelWhitelist(int client, char[] auth) {
@@ -640,7 +640,6 @@ public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRe
 		KickClient(client, "%t", "No Private Profile");
 }
 
->>>>>>> Stashed changes
 /* Whitelist Menu */
 
 public void OpenWhitelistMenu(int client) {
@@ -648,18 +647,19 @@ public void OpenWhitelistMenu(int client) {
 	Menu menu = new Menu(mPickWhitelist, MENU_ACTIONS_ALL);
 	menu.AddItem(CHOICE1, "Hours Whitelist");
 	menu.AddItem(CHOICE2, "Bans Whitelist");
+	menu.AddItem(CHOICE3, "Level Whitelist");
 	menu.ExitButton = true;
 	menu.Display(client, 20);
 }
 
 public int mPickWhitelist(Menu menu, MenuAction action, int param1, int param2) {
 	
-	switch(action) {
+	switch (action) {
 		
 		case MenuAction_Display: {
 			
 			char buffer[255];
-			Format(buffer, sizeof(buffer), "Select a table");
+			Format(buffer, sizeof(buffer), "%t", "Select a Table");
 			
 			Panel panel = view_as<Panel>(param2);
 			panel.SetTitle(buffer);
@@ -688,7 +688,13 @@ public void MenuQuery(int param1, char[] info) {
 	
 	int client = param1;
 	char table[32];
-	StrEqual(info, "hoursTable", false) ? Format(table, sizeof(table), "ps_whitelist") : Format(table, sizeof(table), "ps_whitelist_bans");
+	
+	if (StrEqual(info, "hoursTable", false))
+		Format(table, sizeof(table), "ps_whitelist");
+	if (StrEqual(info, "bansTable", false))
+		Format(table, sizeof(table), "ps_whitelist_bans");
+	if (StrEqual(info, "levelTable", false))
+		Format(table, sizeof(table), "ps_whitelist_level");
 	
 	char query[256];
 	g_Database.Format(query, sizeof(query), "SELECT * FROM %s", table);
@@ -710,16 +716,22 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	
 	
 	if (db == null || results == null) {
-			
-			LogError("[PS] Error while querying %s for menu display! %s", table, error);
-			PrintToServer("[PS] Error while querying %s for menu display! %s", table, error);
-			CPrintToChat(client, "[PS] Error while querying %s for menu display! %s", table, error);
-			return;
-		}
-	
+		
+		LogError("[PS] Error while querying %s for menu display! %s", table, error);
+		PrintToServer("[PS] Error while querying %s for menu display! %s", table, error);
+		CPrintToChat(client, "[PS] Error while querying %s for menu display! %s", table, error);
+		return;
+	}
+		
 	char type[16];
-	StrEqual(table, "ps_whitelist", false) ? Format(type, sizeof(type), "Hours") : Format(type, sizeof(type), "Bans");
 	
+	if (StrEqual(table, "hoursTable", false))
+		Format(type, sizeof(type), "Hours");
+	if (StrEqual(table, "bansTable", false))
+		Format(type, sizeof(type), "Bans");
+	if (StrEqual(table, "levelTable", false))
+		Format(type, sizeof(type), "Level");
+			
 	int entryCol, steamidCol;
 	
 	results.FieldNameToNum("entry", entryCol);
@@ -727,22 +739,10 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	
 	Menu menu = new Menu(TablesMenu, MENU_ACTIONS_ALL);
 	menu.SetTitle("Showing %s Whitelist", type);
-	
-	char steamid[32], id[16]; 
+		
+	char steamid[32], id[16];
 	int count;
 	
-<<<<<<< Updated upstream
-	while (results.FetchRow()) {
-		
-		count++;
-		results.FetchString(steamidCol, steamid, sizeof(steamid));
-		IntToString(count, id, sizeof(id));
-		menu.AddItem(id, steamid, ITEMDRAW_DISABLED);
-	}
-	
-	menu.ExitBackButton = true;
-	menu.Display(client, MENU_TIME_FOREVER);
-=======
 	if (!results.FetchRow()) {
 		CPrintToChat(client, "%t", "No Results");
 		OpenWhitelistMenu(client);
@@ -759,12 +759,11 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 	
->>>>>>> Stashed changes
 }
 
 public int TablesMenu(Menu menu, MenuAction action, int param1, int param2) {
 	
-	switch(action) {
+	switch (action) {
 		
 		case MenuAction_Cancel: {
 			
@@ -790,7 +789,7 @@ public Action Command_Generic(int client, int args) {
 	if (StrEqual(arg1, "whitelist", false))
 		OpenWhitelistMenu(client);
 	
-	if (!StrEqual(arg1, "hours", false) && !StrEqual(arg1, "bans", false)) {
+	if (!StrEqual(arg1, "hours", false) && !StrEqual(arg1, "bans", false) && !StrEqual(arg1, "level", false)) {
 		CReplyToCommand(client, "%t", "Command Generic Usage");
 		return Plugin_Handled;
 	}
@@ -813,7 +812,12 @@ public void Command(char[] arg1, char[] arg2, char[] arg3, int client) {
 	
 	char query[256], table[32];
 	
-	StrEqual(arg1, "hours", false) ? Format(table, sizeof(table), "ps_whitelist") : Format(table, sizeof(table), "ps_whitelist_bans");
+	if (StrEqual(arg1, "hours", false))
+		Format(table, sizeof(table), "ps_whitelist");
+	if (StrEqual(arg1, "bans", false))
+		Format(table, sizeof(table), "ps_whitelist_bans");
+	if (StrEqual(arg1, "level", false))
+		Format(table, sizeof(table), "ps_whitelist_level");
 	
 	if (StrEqual(arg2, "add"))
 		Format(query, sizeof(query), "INSERT INTO %s (steamid) VALUES (%s);", table, arg3);
@@ -843,34 +847,42 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 	pack.ReadString(arg3, sizeof(arg3));
 	delete pack;
 	
-	char module[16];
-	StrEqual(arg1, "hours", false) ? Format(module, sizeof(module), "Hours") : Format(module, sizeof(module), "Bans");
-	
 	if (StrEqual(arg2, "add")) {
 		
 		if (db == null) {
 			
-			LogError("[PS] Error while adding %s to the %s whitelist! %s", arg3, module, error);
-			PrintToServer("[PS] Error while adding %s to the %s whitelist! %s", arg3, module, error);
-			CPrintToChat(client, "[PS] Error while adding %s to the %s whitelist! %s", arg3, module, error);
+			LogError("[PS] Error while adding %s to the %s whitelist! %s", arg3, arg1, error);
+			PrintToServer("[PS] Error while adding %s to the %s whitelist! %s", arg3, arg1, error);
+			CPrintToChat(client, "[PS] Error while adding %s to the %s whitelist! %s", arg3, arg1, error);
 			return;
 		}
 		
 		if (results == null) {
-			if (StrEqual(module, "Hours", false)) {
+			if (StrEqual(arg1, "hours", false)) {
 				CPrintToChat(client, "%t", "Nothing Hour Added", arg3);
 				return;
 			}
-			CPrintToChat(client, "%t", "Nothing Ban Added", arg3);
-			return;
+			if (StrEqual(arg1, "bans", false)) {
+				CPrintToChat(client, "%t", "Nothing Ban Added", arg3);
+				return;
+			}
+			if (StrEqual(arg1, "level", false)) {
+				CPrintToChat(client, "%t", "Nothing Level Added", arg3);
+				
+			}
 		}
-		if (StrEqual(module, "Hours", false)) {
+		if (StrEqual(arg1, "hours", false)) {
 			CPrintToChat(client, "%t", "Successfully Hour Added", arg3);
 			return;
 		}
-		
-		CPrintToChat(client, "%t", "Successfully Ban Added", arg3);
-		
+		if (StrEqual(arg1, "bans", false)) {
+			CPrintToChat(client, "%t", "Successfully Ban Added", arg3);
+			return;
+		}
+		if (StrEqual(arg1, "level", false)) {
+			CPrintToChat(client, "%t", "Successfully Level Added", arg3);
+			return;
+		}
 	}
 	
 	if (StrEqual(arg2, "remove")) {
@@ -884,19 +896,32 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 		}
 		
 		if (!results.AffectedRows) {
-			if (StrEqual(module, "Hours", false)) {
-				
+			if (StrEqual(arg1, "hours", false)) {
 				CPrintToChat(client, "%t", "Nothing Hour Removed", arg3);
 				return;
 			}
-			CPrintToChat(client, "%t", "Nothing Ban Removed", arg3);
+			if (StrEqual(arg1, "bans", false)) {
+				CPrintToChat(client, "%t", "Nothing Ban Removed", arg3);
+				return;
+			}
+			if (StrEqual(arg1, "level", false)) {
+				CPrintToChat(client, "%t", "Nothing Level Removed", arg3);
+				return;
+			}
 		}
-		if (StrEqual(module, "Hours", false)) {
+		
+		if (StrEqual(arg1, "hours", false)) {
 			CPrintToChat(client, "%t", "Successfully Hour Removed", arg3);
 			return;
 		}
-		CPrintToChat(client, "%t", "Successfully Ban Removed", arg3);
-		
+		if (StrEqual(arg1, "bans", false)) {
+			CPrintToChat(client, "%t", "Successfully Ban Removed", arg3);
+			return;
+		}
+		if (StrEqual(arg1, "level", false)) {
+			CPrintToChat(client, "%t", "Successfully Level Removed", arg3);
+			
+		}
 	}
 	
 	if (StrEqual(arg2, "check")) {
@@ -910,22 +935,33 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 		}
 		
 		if (!results.RowCount) {
-			if (StrEqual(module, "Hours", false)) {
-				
+			if (StrEqual(arg1, "hours", false)) {
 				CPrintToChat(client, "%t", "Hour Check Not Whitelisted", arg3);
 				return;
 			}
-			CPrintToChat(client, "%t", "Ban Check Not Whitelisted", arg3);
-			
+			if (StrEqual(arg1, "bans", false)) {
+				CPrintToChat(client, "%t", "Ban Check Not Whitelisted", arg3);
+				return;
+			}
+			if (StrEqual(arg1, "level", false)) {
+				CPrintToChat(client, "%t", "Level Check Not Whitelisted", arg3);
+				return;
+			}
 		}
-		if (StrEqual(module, "Hours", false)) {
-			
+		if (StrEqual(arg1, "hours", false)) {
 			CPrintToChat(client, "%t", "Hour Check Whitelisted", arg3);
 			return;
 		}
-		CPrintToChat(client, "%t", "Ban Check Whitelisted", arg3);
+		if (StrEqual(arg1, "bans", false)) {
+			CPrintToChat(client, "%t", "Ban Check Whitelisted", arg3);
+			return;
+		}
+		if (StrEqual(arg1, "level", false)) {
+			CPrintToChat(client, "%t", "Level Check Whitelisted", arg3);
+			return;
+		}
 	}
-} 
+}
 
 /* On Client Authorized */
 
@@ -937,35 +973,20 @@ public void OnClientAuthorized(int client) {
 	char auth[40];
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
-<<<<<<< Updated upstream
-	if (g_cvEnableHourCheck.BoolValue)
-		if (g_cvHoursWhitelistEnable) {
-			PrintToServer("[PS] Checking hours database for %s existance.", auth);
-			QueryDBForClient(client, auth);
-			return;
-=======
 	if (g_cvEnableHourCheck) {
 		if (g_cvHoursWhitelistEnable) {
 			QueryHoursWhitelist(client, auth);
->>>>>>> Stashed changes
 		} else
 			RequestHours(client, auth);
+	}
 	
-<<<<<<< Updated upstream
-	if (g_cvEnableBanDetection.BoolValue)
-		if (g_cvBansWhitelist.BoolValue) {
-			PrintToServer("[PS] Checking bans database for %s existance.", auth);
-=======
 	if (g_cvEnableBanDetection) {
 		if (g_cvBansWhitelist) {
->>>>>>> Stashed changes
 			QueryBansWhitelist(client, auth);
-			return;
 		} else
 			RequestBans(client, auth);
+	}
 	
-<<<<<<< Updated upstream
-=======
 	if (g_cvEnableLevelCheck) {
 		if (g_cvLevelWhitelistEnable) {
 			QueryLevelWhitelist(client, auth);
@@ -976,5 +997,4 @@ public void OnClientAuthorized(int client) {
 	if (g_cvEnablePrivateProfileCheck) {
 		CheckPrivateProfile(client, auth);
 	}
->>>>>>> Stashed changes
 } 

@@ -1,10 +1,10 @@
 /*
 **
 */
-#if defined _INCLUDE_included
+#if defined _profilestatus_included
  #endinput
 #endif
-#define _INCLUDE_included
+#define _profilestatus_included
 
 /**
  * Gets player's hours from the API response body.
@@ -111,8 +111,6 @@ stock int GetGameBans(char[] responseBodyBans) {
 	return -1;
 }
 
-<<<<<<< Updated upstream
-=======
 /**
  * Gets players' Steam level from the API response body.
  *
@@ -161,7 +159,6 @@ stock int GetCommVisibState(const char[] responseBodyPrivate) {
 	return -1;
 }
 
->>>>>>> Stashed changes
 /**
  * Returns true if player is VAC Banned, false otherwise.
  *
