@@ -7,11 +7,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+<<<<<<< Updated upstream
 #define PLUGIN_VERSION "2.2"
+=======
+#define PLUGIN_VERSION "2.3"
+
+>>>>>>> Stashed changes
 #define CHOICE1 "hoursTable"
 #define CHOICE2 "bansTable"
 
-public Plugin myinfo =  {
+public Plugin myinfo = {
 	
 	name = "[ANY] Profile Status", 
 	author = "ratawar", 
@@ -42,10 +47,23 @@ ConVar
 	g_cvCommunityBan, 
 	g_cvGameBans, 
 	g_cvEconomyBan;
+<<<<<<< Updated upstream
 
 static Regex
 	r_ApiKey, 
 	r_SteamID;
+=======
+	
+ConVar
+	g_cvEnableLevelCheck,
+	g_cvLevelWhitelistEnable,
+	g_cvLevelWhitelistAuto,
+	g_cvMinLevel,
+	g_cvMaxLevel;
+	
+ConVar
+	g_cvEnablePrivateProfileCheck;
+>>>>>>> Stashed changes
 
 Database
 	g_Database;
@@ -57,11 +75,11 @@ static char
 	cvDatabase[16], 
 	EcBan[10];
 
-int iMinHours, 
-	iVACDays, 
-	iVACAmount, 
-	iGameBans, 
-	iEconomyBan;
+int minHours, 
+	vacDays, 
+	vacAmount, 
+	gameBans, 
+	economyBan;
 	
 static int 
 	c = 2;
@@ -76,12 +94,20 @@ public void OnPluginStart() {
 	CreateConVar("sm_profilestatus_version", PLUGIN_VERSION, "Plugin version.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	
 	/* Basic Data */
+<<<<<<< Updated upstream
 	g_cvEnable 				 = CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvApiKey  			 = CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey).", FCVAR_PROTECTED);
 	
 	/* Database Name */
 	g_cvDatabase 			 = CreateConVar("sm_profilestatus_database", "storage-local", 
 											"Hour Check module's database name. Change this value only if you're using another database. (Only SQLite supported.)");
+=======
+	g_cvEnable 				 = AutoExecConfig_CreateConVar("sm_profilestatus_enable", "1", "Enable the plugin?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvApiKey  			 = AutoExecConfig_CreateConVar("sm_profilestatus_apikey", "", "Your Steam API key (https://steamcommunity.com/dev/apikey)", FCVAR_PROTECTED);
+	
+	/* Database Name */
+	g_cvDatabase 			 = AutoExecConfig_CreateConVar("sm_profilestatus_database", "storage-local", "Database name. Change this value only if you're using another database set in databases.cfg");
+>>>>>>> Stashed changes
 	
 	/* Hour Check Module */
 	g_cvEnableHourCheck 	 = CreateConVar("sm_profilestatus_hours_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
@@ -90,6 +116,7 @@ public void OnPluginStart() {
 	g_cvHoursWhitelistAuto   = CreateConVar("sm_profilestatus_hours_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
 	/* Ban Check Module */
+<<<<<<< Updated upstream
 	g_cvEnableBanDetection   = CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvBansWhitelist 		 = CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvVACDays 			 = CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
@@ -99,12 +126,28 @@ public void OnPluginStart() {
 	g_cvEconomyBan 			 = CreateConVar("sm_profilestatus_economy_bans", "0", 
 											"0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", 
 											_, true, 1.0, true, 2.0);
+=======
+	g_cvEnableBanDetection   = AutoExecConfig_CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvBansWhitelist 		 = AutoExecConfig_CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvVACDays 			 = AutoExecConfig_CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
+	g_cvVACAmount 			 = AutoExecConfig_CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvCommunityBan 		 = AutoExecConfig_CreateConVar("sm_profilestatus_community_ban", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
+	g_cvGameBans 			 = AutoExecConfig_CreateConVar("sm_profilestatus_game_bans", "5", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
+	g_cvEconomyBan 			 = AutoExecConfig_CreateConVar("sm_profilestatus_economy_bans", "0", "0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);
+											
+	/* Steam Level Check Module */
+	g_cvEnableLevelCheck     = AutoExecConfig_CreateConVar("sm_profilestatus_level_enable", "1", "Enable Steam Level Checking functions", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvLevelWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_enable", "1", "Enable Steam Level Check Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvLevelWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvMinLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_minlevel", "", "Minimum level required to enter the server.");
+	g_cvMaxLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_maxlevel", "", "Maximum level tolerated to enter the server (can be left blank for no maximum).");
+>>>>>>> Stashed changes
 	
-	/* RegEx */
-	r_ApiKey = CompileRegex("^[0-9A-Z]*$");
-	r_SteamID = CompileRegex("^7656119[0-9]{10}$");
+	/* Private Profile Check Module */
 	
-	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic Hour Check command.");
+	g_cvEnablePrivateProfileCheck  = AutoExecConfig_CreateConVar("sm_profilestatus_privateprofile_enable", "1", "Block Fully Private Profiles?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	
+	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic Plugin Command.");
 	
 	LoadTranslations("profilestatus.phrases");
 	
@@ -119,26 +162,22 @@ public void OnConfigsExecuted() {
 	g_cvApiKey.GetString(cAPIKey, sizeof(cAPIKey));
 	g_cvDatabase.GetString(cvDatabase, sizeof(cvDatabase));
 	
-	iMinHours   = g_cvMinHours.IntValue;
-	iVACDays    = g_cvVACDays.IntValue;
-	iVACAmount  = g_cvVACAmount.IntValue;
-	iGameBans   = g_cvGameBans.IntValue;
-	iEconomyBan = g_cvEconomyBan.IntValue;
+	minHours   = g_cvMinHours.IntValue;
+	vacDays    = g_cvVACDays.IntValue;
+	vacAmount  = g_cvVACAmount.IntValue;
+	gameBans   = g_cvGameBans.IntValue;
+	economyBan = g_cvEconomyBan.IntValue;
 	
 	if (!g_cvEnable.BoolValue)
 		SetFailState("[PS] Plugin disabled!");
 	
-	if (!IsAPIKeyCorrect(cAPIKey, r_ApiKey))
+	if (!IsAPIKeyCorrect(cAPIKey))
 		SetFailState("[PS] Please set your Steam API Key properly!");
 	
-	if (g_cvEnableHourCheck.BoolValue || g_cvBansWhitelist.BoolValue)
+	if (g_cvHoursWhitelistEnable.BoolValue || g_cvBansWhitelist.BoolValue || g_cvLevelWhitelistEnable.BoolValue)
 		Database.Connect(SQL_ConnectDatabase, cvDatabase);
 	else
-		PrintToServer("[PS] Hours Check module and Bans Whitelist disabled! Aborting database connection.");
-	
-	if (!g_cvEnableBanDetection.BoolValue)
-		PrintToServer("[PS] Ban Detection module disabled!");
-	
+		PrintToServer("[PS] No usage of database detected! Aborting database connection.");
 }
 
 /* Database connection and tables creation */
@@ -188,7 +227,7 @@ public void SQL_CreateTable(Database db, DBResultSet results, const char[] error
 
 /* Hour Check Module */
 
-public void QueryDBForClient(int client, char[] auth) {
+public void QueryHoursWhitelist(int client, char[] auth) {
 	
 	char WhitelistReadQuery[512];
 	Format(WhitelistReadQuery, sizeof(WhitelistReadQuery), "SELECT * FROM ps_whitelist WHERE steamid='%s';", auth);
@@ -197,10 +236,10 @@ public void QueryDBForClient(int client, char[] auth) {
 	pack.WriteString(auth);
 	pack.WriteCell(client);
 	
-	g_Database.Query(SQL_QueryDBForClient, WhitelistReadQuery, pack);
+	g_Database.Query(SQL_QueryHoursWhitelist, WhitelistReadQuery, pack);
 }
 
-public void SQL_QueryDBForClient(Database db, DBResultSet results, const char[] error, DataPack pack) {
+public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
 	
 	pack.Reset();
 	char auth[40];
@@ -216,12 +255,9 @@ public void SQL_QueryDBForClient(Database db, DBResultSet results, const char[] 
 
 	if (!results.RowCount) {
 		
-		PrintToServer("[PS] User %s is not hour whitelisted! Checking hours...", auth);
 		RequestHours(client, auth);
 		return;
 	}
-	
-	PrintToServer("[PS] User %s is hour whitelisted! Skipping hour check.", auth);
 }
 
 void RequestHours(int client, char[] auth) {
@@ -267,6 +303,7 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 		return;
 	}
 	
+<<<<<<< Updated upstream
 	if (totalPlayedTime < iMinHours) {
 		KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, iMinHours);
 		return;
@@ -278,12 +315,25 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 	if (!g_cvHoursWhitelistAuto.BoolValue) {
 		PrintToServer("[PS] Player passed hour check, but will not be whitelisted!");
 		return;
+=======
+	if (minHours != 0) {
+		if (totalPlayedTime < minHours) {
+			KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, minHours);
+			return;
+		}
+	}
+	
+	if (g_cvHoursWhitelistAuto.BoolValue) {
+		char auth[40];
+		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
+		AddPlayerToHoursWhitelist(auth);
+>>>>>>> Stashed changes
 	}
 	
 	AddPlayerToWhitelist(auth);
 }
 
-public void AddPlayerToWhitelist(char[] auth) {
+public void AddPlayerToHoursWhitelist(char[] auth) {
 	
 	char WhitelistWriteQuery[512];
 	Format(WhitelistWriteQuery, sizeof(WhitelistWriteQuery), "INSERT INTO ps_whitelist (steamid) VALUES (%s);", auth);
@@ -291,10 +341,10 @@ public void AddPlayerToWhitelist(char[] auth) {
 	DataPack pack = new DataPack();
 	pack.WriteString(auth);
 	
-	g_Database.Query(SQL_AddPlayerToWhitelist, WhitelistWriteQuery, pack);
+	g_Database.Query(SQL_AddPlayerToHoursWhitelist, WhitelistWriteQuery, pack);
 }
 
-public void SQL_AddPlayerToWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
+public void SQL_AddPlayerToHoursWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
 	
 	pack.Reset();
 	char auth[40];
@@ -342,7 +392,6 @@ public void SQL_QueryBansWhitelist(Database db, DBResultSet results, const char[
 	
 	if (!results.RowCount) {
 		
-		PrintToServer("[PS] User %s is not ban whitelisted! Checking ban status...", auth);
 		RequestBans(client, auth);
 		return;
 	}
@@ -392,25 +441,25 @@ public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bReque
 			
 			if (!GetDaysSinceLastVAC(responseBodyBans) || !GetVACAmount(responseBodyBans))
 				KickClient(client, "%t", "VAC Kicked");
-			else if (GetDaysSinceLastVAC(responseBodyBans) < iVACDays)
-				KickClient(client, "%t", "VAC Kicked Days", iVACDays);
-			else if (GetVACAmount(responseBodyBans) > iVACAmount)
-				KickClient(client, "%t", "VAC Kicked Amount", iVACAmount);
+			else if (GetDaysSinceLastVAC(responseBodyBans) < vacDays)
+				KickClient(client, "%t", "VAC Kicked Days", vacDays);
+			else if (GetVACAmount(responseBodyBans) > vacAmount)
+				KickClient(client, "%t", "VAC Kicked Amount", vacAmount);
 		}
 		
 		if (IsCommunityBanned(responseBodyBans))
 			if (g_cvCommunityBan.BoolValue)
 			KickClient(client, "%t", "Community Ban Kicked");
 		
-		if (GetGameBans(responseBodyBans) > iGameBans)
-			KickClient(client, "%t", "Game Bans Exceeded", iGameBans);
+		if (GetGameBans(responseBodyBans) > gameBans)
+			KickClient(client, "%t", "Game Bans Exceeded", gameBans);
 		
 		GetEconomyBans(responseBodyBans, EcBan);
 		
-		if (iEconomyBan == 1)
+		if (economyBan == 1)
 			if (StrContains(EcBan, "banned", false) != -1)
 			KickClient(client, "%t", "Economy Ban Kicked");
-		if (iEconomyBan == 2)
+		if (economyBan == 2)
 			if (StrContains(EcBan, "banned", false) != -1 || StrContains(EcBan, "probation", false) != -1)
 			KickClient(client, "%t", "Economy Ban/Prob Kicked");
 		
@@ -418,6 +467,180 @@ public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bReque
 	
 }
 
+<<<<<<< Updated upstream
+=======
+/* Steam Level Check Module */
+
+public void QueryLevelWhitelist(int client, char[] auth) {
+	
+	char LevelWhitelistQuery[256];
+	Format(LevelWhitelistQuery, sizeof(LevelWhitelistQuery), "SELECT * FROM ps_whitelist_level WHERE steamid='%s'", auth);
+	
+	DataPack pack = new DataPack();
+	pack.WriteString(auth);
+	pack.WriteCell(client);
+	
+	g_Database.Query(SQL_QueryLevelWhitelist, LevelWhitelistQuery, pack);
+	
+}
+
+public void SQL_QueryLevelWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
+	
+	pack.Reset();
+	char auth[40];
+	pack.ReadString(auth, sizeof(auth));
+	int client = pack.ReadCell();
+	delete pack;
+	
+	if (db == null || results == null) {
+		LogError("[PS] Error while checking if user %s is level whitelisted! %s", auth, error);
+		PrintToServer("[PS] Error while checking if user %s is level whitelisted! %s", auth, error);
+		return;
+	}
+	
+	if (!results.RowCount) {
+		
+		RequestLevel(client, auth);
+		return;
+	}
+	
+	PrintToServer("[PS] User %s is level whitelisted! Skipping level check.", auth);
+}
+
+void RequestLevel(int client, char[] auth) {
+	
+	Handle request = CreateRequest_RequestLevel(client, auth);
+	SteamWorks_SendHTTPRequest(request);
+	
+}
+
+Handle CreateRequest_RequestLevel(int client, char[] auth) {
+	
+	char apikey[40];
+	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
+	
+	char request_url[512];
+	
+	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=%s&steamid=%s", apikey, auth);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPCallbacks(request, RequestLevel_OnHTTPResponse);
+	return request;
+}
+
+public int RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+	
+	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		PrintToServer("[PS] HTTP Steam Level Request failure!");
+		delete request;
+		return;
+	}
+	
+	int bufferSize;
+	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
+	char[] responseBodyLevel = new char[bufferSize];
+	SteamWorks_GetHTTPResponseBodyData(request, responseBodyLevel, bufferSize);
+	delete request;
+	
+	int minlevel = g_cvMinLevel.IntValue;
+	int maxlevel = g_cvMaxLevel.IntValue;
+	int level = GetSteamLevel(responseBodyLevel);
+	if (level == -1) {
+		KickClient(client, "%t", "Invisible Level");
+		return;
+	}
+	else if (level < minlevel) {
+		KickClient(client, "%t", "Low Level", level, minlevel);
+		return;
+	}
+	if (maxlevel != 0) {
+		if (level > maxlevel) {
+			KickClient(client, "%t", "High Level", level, maxlevel);
+			return;
+		}
+	}
+	if (g_cvLevelWhitelistAuto.BoolValue) {
+		char auth[40];
+		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
+		AddPlayerToLevelWhitelist(auth);
+	}
+}
+
+public void AddPlayerToLevelWhitelist(char[] auth) {
+	
+	char LevelWriteQuery[512];
+	Format(LevelWriteQuery, sizeof(LevelWriteQuery), "INSERT INTO ps_whitelist_level (steamid) VALUES (%s);", auth);
+	
+	DataPack pack = new DataPack();
+	pack.WriteString(auth);
+	
+	g_Database.Query(SQL_AddPlayerToLevelWhitelist, LevelWriteQuery, pack);
+	
+}
+
+public void SQL_AddPlayerToLevelWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
+	
+	pack.Reset();
+	char auth[40];
+	pack.ReadString(auth, sizeof(auth));
+	delete pack;
+	
+	if (db == null || results == null)
+	{
+		LogError("[PS] Error while trying to level whitelist user %s! %s", auth, error);
+		PrintToServer("[PS] Error while trying to level whitelist user %s! %s", auth, error);
+		return;
+	}
+	
+	PrintToServer("[PS] Player %s successfully level whitelisted!", auth);
+}
+
+/* Private Profile Check Module */
+
+public void CheckPrivateProfile(int client, char[] auth) {
+	
+	Handle request = CreateRequest_RequestPrivate(client, auth);
+	SteamWorks_SendHTTPRequest(request);
+	
+}
+
+Handle CreateRequest_RequestPrivate(int client, char[] auth) {
+	
+	char apikey[40];
+	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
+	
+	char request_url[512];
+	
+	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", apikey, auth);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPCallbacks(request, RequestPrivate_OnHTTPResponse);
+	return request;
+}
+
+public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+	
+	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		PrintToServer("[PS] HTTP Steam Private Profile Request failure!");
+		delete request;
+		return;
+	}
+	
+	int bufferSize;
+	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
+	char[] responseBodyPrivate = new char[bufferSize];
+	SteamWorks_GetHTTPResponseBodyData(request, responseBodyPrivate, bufferSize);
+	delete request;
+	
+	PrintToServer("%i", GetCommVisibState(responseBodyPrivate));
+
+	if (GetCommVisibState(responseBodyPrivate) == 1)
+		KickClient(client, "%t", "No Private Profile");
+}
+
+>>>>>>> Stashed changes
 /* Whitelist Menu */
 
 public void OpenWhitelistMenu(int client) {
@@ -508,6 +731,7 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	char steamid[32], id[16]; 
 	int count;
 	
+<<<<<<< Updated upstream
 	while (results.FetchRow()) {
 		
 		count++;
@@ -518,6 +742,24 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	
 	menu.ExitBackButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
+=======
+	if (!results.FetchRow()) {
+		CPrintToChat(client, "%t", "No Results");
+		OpenWhitelistMenu(client);
+		return;
+	} else {
+		do {
+			count++;
+			results.FetchString(steamidCol, steamid, sizeof(steamid));
+			IntToString(count, id, sizeof(id));
+			menu.AddItem(id, steamid, ITEMDRAW_RAWLINE);
+			
+		} while (results.FetchRow());
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+	
+>>>>>>> Stashed changes
 }
 
 public int TablesMenu(Menu menu, MenuAction action, int param1, int param2) {
@@ -558,7 +800,7 @@ public Action Command_Generic(int client, int args) {
 		return Plugin_Handled;
 	}
 	
-	if (MatchRegex(r_SteamID, arg3) == 0) {
+	if (!SimpleRegexMatch(arg3, "^7656119[0-9]{10}$")) {
 		CReplyToCommand(client, "%t", "Invalid STEAMID");
 		return Plugin_Handled;
 	}
@@ -635,9 +877,9 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 		
 		if (db == null || results == null)
 		{
-			LogError("[PS] Error while issuing remove command on %s! %s", arg3, error);
-			PrintToServer("[PS] Error while issuing remove command on %s! %s", arg3, error);
-			CPrintToChat(client, "[PS] Error while issuing remove command on %s! %s", arg3, error);
+			LogError("[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
+			PrintToServer("[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
+			CPrintToChat(client, "[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
 			return;
 		}
 		
@@ -689,23 +931,50 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 
 public void OnClientAuthorized(int client) {
 	
+	if (IsFakeClient(client))
+		return;
+	
 	char auth[40];
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
+<<<<<<< Updated upstream
 	if (g_cvEnableHourCheck.BoolValue)
 		if (g_cvHoursWhitelistEnable) {
 			PrintToServer("[PS] Checking hours database for %s existance.", auth);
 			QueryDBForClient(client, auth);
 			return;
+=======
+	if (g_cvEnableHourCheck) {
+		if (g_cvHoursWhitelistEnable) {
+			QueryHoursWhitelist(client, auth);
+>>>>>>> Stashed changes
 		} else
 			RequestHours(client, auth);
 	
+<<<<<<< Updated upstream
 	if (g_cvEnableBanDetection.BoolValue)
 		if (g_cvBansWhitelist.BoolValue) {
 			PrintToServer("[PS] Checking bans database for %s existance.", auth);
+=======
+	if (g_cvEnableBanDetection) {
+		if (g_cvBansWhitelist) {
+>>>>>>> Stashed changes
 			QueryBansWhitelist(client, auth);
 			return;
 		} else
 			RequestBans(client, auth);
 	
+<<<<<<< Updated upstream
+=======
+	if (g_cvEnableLevelCheck) {
+		if (g_cvLevelWhitelistEnable) {
+			QueryLevelWhitelist(client, auth);
+		} else
+			RequestLevel(client, auth);
+	}
+	
+	if (g_cvEnablePrivateProfileCheck) {
+		CheckPrivateProfile(client, auth);
+	}
+>>>>>>> Stashed changes
 } 

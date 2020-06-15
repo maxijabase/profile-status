@@ -35,7 +35,7 @@ stock int GetPlayerHours(const char[] responseBody) {
 /**
  * Gets players' days since their last VAC Ban from the API response body.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  */
 
 stock int GetDaysSinceLastVAC(const char[] responseBodyBans) {
@@ -61,7 +61,7 @@ stock int GetDaysSinceLastVAC(const char[] responseBodyBans) {
 /**
  * Gets players' VAC Ban amount from the API response body.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  */
 
 stock int GetVACAmount(const char[] responseBodyBans) {
@@ -88,7 +88,7 @@ stock int GetVACAmount(const char[] responseBodyBans) {
 /**
  * Gets players' amount of Game Bans from the API response body.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  */
 
 stock int GetGameBans(char[] responseBodyBans) {
@@ -111,10 +111,61 @@ stock int GetGameBans(char[] responseBodyBans) {
 	return -1;
 }
 
+<<<<<<< Updated upstream
+=======
+/**
+ * Gets players' Steam level from the API response body.
+ *
+ * @param responseBodyLevel          API response body.
+ */
+
+stock int GetSteamLevel(const char[] responseBodyLevel) {
+	
+	char str[10][64];
+	
+	ExplodeString(responseBodyLevel, "_level\":", str, sizeof(str), sizeof(str[]));
+	
+	char str2[2][64];
+	
+	ExplodeString(str[1], "}", str2, sizeof(str2), sizeof(str2[]));
+	
+	if (str2[0][0] == '\0')
+		return -1;
+	else
+		return (StringToInt(str2[0]));
+	}
+
+/**
+ * Gets players' Community Visibility State from the API response body.
+ *
+ * @param responseBodyPrivate          API response body.
+ */
+
+stock int GetCommVisibState(const char[] responseBodyPrivate) {
+	
+	char str[10][512];
+	
+	ExplodeString(responseBodyPrivate, ",", str, sizeof(str), sizeof(str[]));
+	
+	for (int i = 0; i < 10; i++) {
+		
+		if (StrContains(str[i], "communityvisibilitystate", false) != -1) {
+			
+			char str2[3][32];
+			
+			ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
+			return (StringToInt(str2[1]));
+		}
+		
+	}
+	return -1;
+}
+
+>>>>>>> Stashed changes
 /**
  * Returns true if player is VAC Banned, false otherwise.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  */
 
 stock bool IsVACBanned(const char[] responseBodyBans) {
@@ -140,7 +191,7 @@ stock bool IsVACBanned(const char[] responseBodyBans) {
 /**
  * Returns true if player is Community Banned, false otherwise.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  */
 
 stock bool IsCommunityBanned(const char[] responseBodyBans) {
@@ -166,7 +217,7 @@ stock bool IsCommunityBanned(const char[] responseBodyBans) {
 /**
  * Returns players' Economy Ban status.
  *
- * @param responseBody          API response body.
+ * @param responseBodyBans          API response body.
  * @param EcBan          Variable to store the type of Economy Ban.
  */
 
@@ -194,12 +245,6 @@ stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan) {
  * @param responseBody          API response body.
  */
 
-stock bool IsAPIKeyCorrect(char[] cAPIKey, Regex r_ApiKey) {
-	
-	if (cAPIKey[0] == '\0')
-		return false;
-	else if (MatchRegex(r_ApiKey, cAPIKey) == 0)
-		return false;
-		
-	return true;
+stock bool IsAPIKeyCorrect(char[] cAPIKey) {
+	return (cAPIKey[0] == '\0' || !SimpleRegexMatch(cAPIKey, "^[0-9A-Z]*$")) ? false : true;
 }

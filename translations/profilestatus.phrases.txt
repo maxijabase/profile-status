@@ -171,4 +171,47 @@
 		"es" "Este servidor prohíbe jugadores en situación de Trade Ban o Probation."
 		"pt" "Esse servidor proíbe jogadores em situação de Trade Ban ou Probation."
 	}
+<<<<<<< Updated upstream
+=======
+	"Invisible Level"
+	{
+		"en" "Error while retrieving your Steam level! Make sure your profile is public."
+		"es" "¡Error al obtener tu nivel de Steam! Asegúrate de que tu perfil sea público."
+		"pt" "Erro ao obter o seu nível de Steam! Verifique que o seu perfil seja público."
+	}
+	"Low Level"
+	{
+		"#format" "{1:i},{2:i}"
+		
+		"en" "Your Steam level is {1}. Only levels {2} and above are allowed in this server."
+		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para arriba son permitidos en este servidor."
+		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
+	}
+	"High Level"
+	{
+		"#format" "{1:i},{2:i}"
+		
+		"en" "Your Steam level is {1}. Only levels {2} and below are allowed in this server."
+		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para abajo son permitidos en este servidor."
+		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
+	}
+	"No Private Profile"
+	{
+		"en" "Private profiles aren't allowed here!"
+		"es" "¡No se aceptan perfiles privados en este servidor!"
+		"pt" "Neste servidor os perfis privados não são aceitos!"
+	}
+	"Select a Table"
+	{
+		"en" "Select a table"
+		"es" "Elige una tabla"
+		"pt" "Escolha uma tabela"
+	}
+	"No Results"
+	{
+		"en" "{green}[PS]{default} This table is empty!"
+		"es" "{green}[PS]{default} ¡Esta tabla está vacía!"
+		"pt" "{green}[PS]{default} Esta tabela está vazia!"
+	}
+>>>>>>> Stashed changes
 }
