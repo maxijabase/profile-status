@@ -293,17 +293,24 @@ Handle CreateRequest_RequestHours(int client, char[] auth) {
 	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&include_played_free_games=1&appids_filter[0]=%i&steamid=%s&format=json", cAPIKey, GetAppID(), auth);
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
 	
-	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestHours_OnHTTPResponse);
 	return request;
 }
 
-public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Hours Request failure!");
 		delete request;
 		return;
+	}
+	
+	int client = GetClientOfUserId(userid);
+	
+	if (!client) {
+	    delete request;
+	    return;
 	}
 	
 	int bufferSize;
