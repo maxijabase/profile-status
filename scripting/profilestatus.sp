@@ -1,10 +1,10 @@
 #include <sourcemod>
-#include <steamworks>
-#include <multicolors>
 #include <regex>
-#include <stocksoup/version>
-#include <profilestatus>
-#include <autoexecconfig>
+#include "include/steamworks"
+#include "multicolors"
+#include "include/stocksoup/version"
+#include "include/profilestatus"
+#include "include/autoexecconfig"
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -116,7 +116,7 @@ public void OnPluginStart() {
 	g_cvEconomyBan 			 = AutoExecConfig_CreateConVar("sm_profilestatus_economy_bans", "0", "0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);
 											
 	/* Steam Level Check Module */
-	g_cvEnableLevelCheck     = AutoExecConfig_CreateConVar("sm_profilestatus_level_enable", "1", "Enable Steam Level Checking functions", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvEnableLevelCheck	 = AutoExecConfig_CreateConVar("sm_profilestatus_level_enable", "1", "Enable Steam Level Checking functions", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvLevelWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_enable", "1", "Enable Steam Level Check Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvLevelWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvMinLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_minlevel", "", "Minimum level required to enter the server.");
@@ -143,7 +143,7 @@ public void OnConfigsExecuted() {
 	g_cvDatabase.GetString(cvDatabase, sizeof(cvDatabase));
 	
 	minHours   = g_cvMinHours.IntValue;
-	vacDays    = g_cvVACDays.IntValue;
+	vacDays	= g_cvVACDays.IntValue;
 	vacAmount  = g_cvVACAmount.IntValue;
 	gameBans   = g_cvGameBans.IntValue;
 	economyBan = g_cvEconomyBan.IntValue;
@@ -253,7 +253,7 @@ public void QueryHoursWhitelist(int client, char[] auth) {
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(auth);
-	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_QueryHoursWhitelist, WhitelistReadQuery, pack);
 }
@@ -263,8 +263,12 @@ public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char
 	pack.Reset();
 	char auth[40];
 	pack.ReadString(auth, sizeof(auth));
-	int client = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
+	
+	if (!client) {
+		return;
+	}
 	
 	if (db == null || results == null) {
 		LogError("[PS] Error while checking if user %s is hour whitelisted! %s", auth, error);
@@ -309,8 +313,8 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 	int client = GetClientOfUserId(userid);
 	
 	if (!client) {
-	    delete request;
-	    return;
+		delete request;
+		return;
 	}
 	
 	int bufferSize;
@@ -380,7 +384,7 @@ public void QueryBansWhitelist(int client, char[] auth) {
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(auth);
-	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_QueryBansWhitelist, BansWhitelistQuery, pack);
 	
@@ -391,8 +395,12 @@ public void SQL_QueryBansWhitelist(Database db, DBResultSet results, const char[
 	pack.Reset();
 	char auth[40];
 	pack.ReadString(auth, sizeof(auth));
-	int client = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
+	
+	if (!client) {
+		return;
+	}
 	
 	if (db == null || results == null) {
 		LogError("[PS] Error while checking if user %s is ban whitelisted! %s", auth, error);
@@ -426,15 +434,22 @@ Handle CreateRequest_RequestBans(int client, char[] auth) {
 	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=%s&steamids=%s", apikey, auth);
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
 	
-	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestBans_OnHTTPResponse);
 	return request;
 }
 
-public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Bans Request failure!");
+		delete request;
+		return;
+	}
+	
+	int client = GetClientOfUserId(userid);
+
+	if (!client) {
 		delete request;
 		return;
 	}
@@ -486,7 +501,7 @@ public void QueryLevelWhitelist(int client, char[] auth) {
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(auth);
-	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_QueryLevelWhitelist, LevelWhitelistQuery, pack);
 	
@@ -497,8 +512,12 @@ public void SQL_QueryLevelWhitelist(Database db, DBResultSet results, const char
 	pack.Reset();
 	char auth[40];
 	pack.ReadString(auth, sizeof(auth));
-	int client = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
+	
+	if (!client) {
+		return;
+	}
 	
 	if (db == null || results == null) {
 		LogError("[PS] Error while checking if user %s is level whitelisted! %s", auth, error);
@@ -532,15 +551,22 @@ Handle CreateRequest_RequestLevel(int client, char[] auth) {
 	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=%s&steamid=%s", apikey, auth);
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
 	
-	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestLevel_OnHTTPResponse);
 	return request;
 }
 
-public int RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+public int RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Steam Level Request failure!");
+		delete request;
+		return;
+	}
+	
+	int client = GetClientOfUserId(userid);
+
+	if (!client) {
 		delete request;
 		return;
 	}
@@ -623,15 +649,22 @@ Handle CreateRequest_RequestPrivate(int client, char[] auth) {
 	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", apikey, auth);
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
 	
-	SteamWorks_SetHTTPRequestContextValue(request, client);
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestPrivate_OnHTTPResponse);
 	return request;
 }
 
-public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int client) {
+public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Steam Private Profile Request failure!");
+		delete request;
+		return;
+	}
+	
+	int client = GetClientOfUserId(userid);
+
+	if (!client) {
 		delete request;
 		return;
 	}
@@ -709,7 +742,7 @@ public void MenuQuery(int param1, char[] info) {
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(table);
-	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_MenuQuery, query, pack);
 }
@@ -719,9 +752,12 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	pack.Reset();
 	char table[32];
 	pack.ReadString(table, sizeof(table));
-	int client = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
 	
+	if (!client) {
+		return;
+	}
 	
 	if (db == null || results == null) {
 		
@@ -836,7 +872,7 @@ public void Command(char[] arg1, char[] arg2, char[] arg3, int client) {
 	
 	DataPack pack = new DataPack();
 	
-	pack.WriteCell(client);
+	pack.WriteCell(GetClientUserId(client));
 	pack.WriteString(arg1);
 	pack.WriteString(arg2);
 	pack.WriteString(arg3);
@@ -848,12 +884,16 @@ public void Command(char[] arg1, char[] arg2, char[] arg3, int client) {
 public void SQL_Command(Database db, DBResultSet results, const char[] error, DataPack pack) {
 	
 	pack.Reset();
-	int client = pack.ReadCell();
+	int client = GetClientOfUserId(pack.ReadCell());
 	char arg1[30], arg2[30], arg3[30];
 	pack.ReadString(arg1, sizeof(arg1));
 	pack.ReadString(arg2, sizeof(arg2));
 	pack.ReadString(arg3, sizeof(arg3));
 	delete pack;
+	
+	if (!client) {
+		return;
+	}
 	
 	if (StrEqual(arg2, "add")) {
 		
