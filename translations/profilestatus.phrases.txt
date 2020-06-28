@@ -200,22 +200,22 @@
 	"Invisible Level"
 	{
 		"en" "Error while retrieving your Steam level! Make sure your profile is public."
-		"es" "¡Error al obtener tu nivel de Steam! Asegúrate de que tu perfil sea público."
-		"pt" "Erro ao obter o seu nível de Steam! Verifique que o seu perfil está público."
+		"es" "¡Error al obtener tu Nivel Steam! Asegúrate de que tu perfil sea público."
+		"pt" "Erro ao obter seu Nível Steam! Verifique se seu perfil está público."
 	}
 	"Low Level"
 	{
 		"#format" "{1:i},{2:i}"		
 		"en" "Your Steam level is {1}. Only levels {2} and above are allowed in this server."
-		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para arriba son permitidos en este servidor."
-		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
+		"es" "Tu Nivel Steam es {1}. Sólo niveles de {2} para arriba son permitidos en este servidor."
+		"pt" "Seu Nível Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
 	}
 	"High Level"
 	{
 		"#format" "{1:i},{2:i}"		
 		"en" "Your Steam level is {1}. Only levels {2} and below are allowed in this server."
-		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para abajo son permitidos en este servidor."
-		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
+		"es" "Tu Nivel Steam es {1}. Sólo niveles de {2} para abajo son permitidos en este servidor."
+		"pt" "Seu Nível Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
 	}
 	"No Private Profile"
 	{
