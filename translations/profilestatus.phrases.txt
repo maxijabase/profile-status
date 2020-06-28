@@ -11,13 +11,13 @@
 	{
 		"en" "Error while retrieving your hours! Make sure they're public"
 		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
-		"pt" "Erro ao tentar obter suas horas de jogo! Verifique se sua conta esta pública"
+		"pt" "Erro ao tentar obter suas horas de jogo! Verifique se suas horas de jogo estão pública"
 	}
 	"Invalid STEAMID"
 	{
-		"en" "{green}[PS]{default} Invalid Steam_ID!"
-		"es" "{green}[PS]{default} ¡Steam_ID inválido!"
-		"pt" "{green}[PS]{default} Steam_ID inválido!"
+		"en" "{green}[PS]{default} Invalid Steam ID!"
+		"es" "{green}[PS]{default} ¡Steam ID Inválido!"
+		"pt" "{green}[PS]{default} Steam ID Inválido!"
 	}
 	"Hour Check Not Whitelisted"
 	{
@@ -150,7 +150,7 @@
 	{
 		"en" "{green}[PS]{default} Usage: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
 		"es" "{green}[PS]{default} Uso: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
-		"pt" "{green}[PS]{default} Digite: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
+		"pt" "{green}[PS]{default} Uso: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
 	}
 	"VAC Kicked"
 	{
