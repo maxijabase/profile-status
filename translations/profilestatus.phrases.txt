@@ -22,44 +22,44 @@
 	"Hour Check Not Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}hour whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de horas!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de horas!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {default}is {red}not {default}hour whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {red}no está {default}en la whitelist de horas!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {red}não está {default}na whitelist de horas!"
 	}
 	"Ban Check Not Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}ban whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de bans!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de bans!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {default}is {red}not {default}ban whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {red}no está {default}en la whitelist de bans!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {red}não está {default}na whitelist de bans!"
 	}
 	"Level Check Not Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}level whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de niveles!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de níveis!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {default}is {red}not {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {red}no está {default}en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {red}não está {default}na whitelist de níveis!"
 	}	
 	"Hour Check Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}hour whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de horas!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de horas!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {green}is {default}hour whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {green}está {default}en la whitelist de horas!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {green}está {default}na whitelist de horas!"
 	}
 	"Ban Check Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}ban whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de bans!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de bans!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {green}is {default}ban whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {green}está {default}en la whitelist de bans!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {green}está {default}na whitelist de bans!"
 	}
 	"Level Check Whitelisted"
 	{
 		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}level whitelisted!"
-		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de niveles!"
-		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de níveis!"
+		"en" "{green}[PS]{default} Steam ID {grey}{1} {green}is {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam ID {grey}{1} {green}está {default}en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Steam ID {grey}{1} {green}está {default}na whitelist de níveis!"
 	}
 	"Successfully Hour Removed"
 	{
