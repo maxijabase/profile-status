@@ -2,174 +2,155 @@
 {
 	"Not Enough Hours"
 	{
-		"#format" "{1:i},{2:i}"
-		
+		"#format" "{1:i},{2:i}"		
 		"en" "You have {1} out of the {2} hours required to join this server!"
 		"es" "¡Tienes {1} de las {2} horas necesarias para unirte a este servidor!"
-		"pt" "Você tem {1} das {2} horas necessárias pra se unir a este servidor!"
+		"pt" "Você tem {1} das {2} horas necessárias pra conectar neste servidor!"
 	}
 	"Invisible Hours"
 	{
 		"en" "Error while retrieving your hours! Make sure they're public"
 		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
-		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
+		"pt" "Erro ao tentar obter suas horas de jogo! Verifique se sua conta esta pública"
 	}
 	"Invalid STEAMID"
 	{
-		"en" "{green}[PS]{default} Invalid STEAMID!"
-		"es" "{green}[PS]{default} ¡STEAMID inválido!"
-		"pt" "{green}[PS]{default} STEAMID inválido!"
+		"en" "{green}[PS]{default} Invalid Steam_ID!"
+		"es" "{green}[PS]{default} ¡Steam_ID inválido!"
+		"pt" "{green}[PS]{default} Steam_ID inválido!"
 	}
 	"Hour Check Not Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}hour whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de horas."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist das horas!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}hour whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de horas!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de horas!"
 	}
 	"Ban Check Not Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}ban whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de bans."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos bans!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}ban whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de bans!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de bans!"
 	}
 	"Level Check Not Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}level whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de niveles."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos níveis!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {default}is {red}not {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {red}no está {default}en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {red}não está {default}na whitelist de níveis!"
 	}	
 	"Hour Check Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}hour whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de horas."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist das horas!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}hour whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de horas!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de horas!"
 	}
 	"Ban Check Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}ban whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de bans."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos bans!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}ban whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de bans!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de bans!"
 	}
 	"Level Check Whitelisted"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}level whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de niveles."
-		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos níveis!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Steam_ID {grey}{1} {green}is {default}level whitelisted!"
+		"es" "{green}[PS]{default} El Steam_ID {grey}{1} {green}está {default}en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Steam_ID {grey}{1} {green}está {default}na whitelist de níveis!"
 	}
 	"Successfully Hour Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
-		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully removed {grey}{1} {default}from the hours whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {grey}{1} {default}de la whitelist de horas con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {grey}{1} {default}da whitelist de horas com sucesso!"
 	}
 	"Successfully Ban Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
-		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully removed {grey}{1} {default}from the hours whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {grey}{1} {default}de la whitelist de horas con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {grey}{1} {default}da whitelist de horas com sucesso!"
 	}
 	"Successfully Level Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the level whitelist!"
-		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de niveles con éxito!"
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist dos níveis com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully removed {grey}{1} {default}from the level whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {grey}{1} {default}de la whitelist de niveles con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {grey}{1} {default}da whitelist de níveis com sucesso!"
 	}
 	"Nothing Hour Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in hours whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de horas!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist das horas!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was not in hours whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}no estaba en la whitelist de horas!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}não estava na whitelist de horas!"
 	}
 	"Nothing Ban Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in bans whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de bans!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos bans!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was not in bans whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}no estaba en la whitelist de bans!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}não estava na whitelist de bans!"
 	}
 	"Nothing Ban Removed"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in level whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de niveles!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos níveis!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was not in level whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}no estaba en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}não estava na whitelist de níveis!"
 	}
 	"Successfully Hour Added"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the hours whitelist!"
-		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de horas!"
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist das horas com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully added {grey}{1} {default}to the hours whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {grey}{1} {default}a la whitelist de horas!"
+		"pt" "{green}[PS]{default} Adicionada a ID {grey}{1} {default}à whitelist de horas com sucesso!"
 	}
 	"Successfully Ban Added"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the bans whitelist!"
-		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de bans!"
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos bans com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully added {grey}{1} {default}to the bans whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {grey}{1} {default}a la whitelist de bans!"
+		"pt" "{green}[PS]{default} Adicionada a ID {grey}{1} {default}à whitelist de bans com sucesso!"
 	}
 	"Successfully Level Added"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the level whitelist!"
-		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de niveles!"
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos níveis com sucesso!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} Successfully added {grey}{1} {default}to the level whitelist!"
+		"es" "{green}[PS]{default} ¡Agregada la ID {grey}{1} {default}a la whitelist de niveles!"
+		"pt" "{green}[PS]{default} Adicionada a ID {grey}{1} {default}à whitelist de níveis com sucesso!"
 	}	
 	"Nothing Hour Added"
 	{
 		
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in hours whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de horas!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist das horas!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was already in hours whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}ya estaba en la whitelist de horas!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}já estava na whitelist de horas!"
 	}
 	"Nothing Ban Added"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in bans whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de bans!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos bans!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was already in bans whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}ya estaba en la whitelist de bans!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}já estava na whitelist de bans!"
 	}
 	"Nothing Level Added"
 	{
-		"#format" "{1:s}"
-		
-		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in level whitelist!"
-		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de niveles!"
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos níveis!"
+		"#format" "{1:s}"		
+		"en" "{green}[PS]{default} ID {grey}{1} {default}was already in level whitelist!"
+		"es" "{green}[PS]{default} ¡La ID {grey}{1} {default}ya estaba en la whitelist de niveles!"
+		"pt" "{green}[PS]{default} ID {grey}{1} {default}já estava na whitelist de níveis!"
 	}
 	"Command Generic Usage"
 	{
-		"en" "{green}[PS]{default} Usage: sm_ps <hours|bans> <add|remove|check> <STEAMID64>"
-		"es" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
-		"pt" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
+		"en" "{green}[PS]{default} Usage: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
+		"es" "{green}[PS]{default} Uso: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
+		"pt" "{green}[PS]{default} Digite: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
 	}
 	"VAC Kicked"
 	{
@@ -179,16 +160,14 @@
 	}
 	"VAC Kicked Days"
 	{
-		"format" "{1:i}"
-		
+		"format" "{1:i}"		
 		"en" "This server disallows players with less than {1} days since their last VAC Ban."
 		"es" "Este servidor prohíbe jugadores con menos de {1} días desde su último VAC Ban."
 		"pt" "Esse servidor proíbe jogadores com menos de {1} dias desde o seu último VAC Ban."
 	}
 	"VAC Kicked Amount"
 	{
-		"format" "{1:i}"
-		
+		"format" "{1:i}"		
 		"en" "This server disallows players with more than {1} VAC Bans."
 		"es" "Este servidor prohíbe jugadores con más de {1} VAC Bans."
 		"pt" "Esse servidor proíbe jogadores com mais de {1} VAC Bans."
@@ -201,8 +180,7 @@
 	}
 	"Game Bans Exceeded"
 	{
-		"format" "{1:i}"
-		
+		"format" "{1:i}"		
 		"en" "This server disallows players with more than {1} Game Bans."
 		"es" "Este servidor prohíbe jugadores con más de {1} Game Bans."
 		"pt" "Esse servidor proíbe jogadores com mais de {1} Game Bans."
@@ -223,20 +201,18 @@
 	{
 		"en" "Error while retrieving your Steam level! Make sure your profile is public."
 		"es" "¡Error al obtener tu nivel de Steam! Asegúrate de que tu perfil sea público."
-		"pt" "Erro ao obter o seu nível de Steam! Verifique que o seu perfil seja público."
+		"pt" "Erro ao obter o seu nível de Steam! Verifique que o seu perfil está público."
 	}
 	"Low Level"
 	{
-		"#format" "{1:i},{2:i}"
-		
+		"#format" "{1:i},{2:i}"		
 		"en" "Your Steam level is {1}. Only levels {2} and above are allowed in this server."
 		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para arriba son permitidos en este servidor."
 		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
 	}
 	"High Level"
 	{
-		"#format" "{1:i},{2:i}"
-		
+		"#format" "{1:i},{2:i}"		
 		"en" "Your Steam level is {1}. Only levels {2} and below are allowed in this server."
 		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para abajo son permitidos en este servidor."
 		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
