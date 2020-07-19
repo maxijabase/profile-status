@@ -164,8 +164,7 @@ public void OnConfigsExecuted() {
 
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
-	if (db == null)
-	{
+	if (db == null) {
 		LogError("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		PrintToServer("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		return;
