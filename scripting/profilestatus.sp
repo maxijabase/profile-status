@@ -1021,28 +1021,28 @@ public void OnClientAuthorized(int client) {
 	char auth[40];
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
-	if (g_cvEnableHourCheck) {
-		if (g_cvHoursWhitelistEnable) {
+	if (g_cvEnableHourCheck.BoolValue) {
+		if (g_cvHoursWhitelistEnable.BoolValue) {
 			QueryHoursWhitelist(client, auth);
 		} else
 			RequestHours(client, auth);
 	}
 	
-	if (g_cvEnableBanDetection) {
-		if (g_cvBansWhitelist) {
+	if (g_cvEnableBanDetection.BoolValue) {
+		if (g_cvBansWhitelist.BoolValue) {
 			QueryBansWhitelist(client, auth);
 		} else
 			RequestBans(client, auth);
 	}
 	
-	if (g_cvEnableLevelCheck) {
-		if (g_cvLevelWhitelistEnable) {
+	if (g_cvEnableLevelCheck.BoolValue) {
+		if (g_cvLevelWhitelistEnable.BoolValue) {
 			QueryLevelWhitelist(client, auth);
 		} else
 			RequestLevel(client, auth);
 	}
 	
-	if (g_cvEnablePrivateProfileCheck) {
+	if (g_cvEnablePrivateProfileCheck.BoolValue) {
 		CheckPrivateProfile(client, auth);
 	}
 } 
