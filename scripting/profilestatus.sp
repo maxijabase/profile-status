@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <regex>
-#include "include/steamworks"
 #include "multicolors"
+#include "include/steamworks"
 #include "include/stocksoup/version"
 #include "include/profilestatus"
 #include "include/autoexecconfig"
@@ -9,7 +9,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "2.3.4"
+#define PLUGIN_VERSION "2.3.5"
 
 #define CHOICE1 "hoursTable"
 #define CHOICE2 "bansTable"
@@ -282,26 +282,19 @@ public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char
 	}
 }
 
-void RequestHours(int client, char[] auth) {
+public void RequestHours(int client, char[] auth) {
 	
-	Handle request = CreateRequest_RequestHours(client, auth);
-	SteamWorks_SendHTTPRequest(request);
+	char URL[512];
+	Format(URL, sizeof(URL), "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&include_played_free_games=1&appids_filter[0]=%i&steamid=%s&format=json", cAPIKey, GetAppID(), auth);
 	
-}
-
-Handle CreateRequest_RequestHours(int client, char[] auth) {
-	
-	char request_url[512];
-	
-	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=%s&include_played_free_games=1&appids_filter[0]=%i&steamid=%s&format=json", cAPIKey, GetAppID(), auth);
-	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, URL);
 	
 	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestHours_OnHTTPResponse);
-	return request;
+	SteamWorks_SendHTTPRequest(request);
 }
 
-public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
+public void RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Hours Request failure!");
@@ -310,16 +303,13 @@ public int RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 	}
 	
 	int client = GetClientOfUserId(userid);
-	
 	if (!client) {
 		delete request;
 		return;
 	}
 	
 	int bufferSize;
-	
 	SteamWorks_GetHTTPResponseBodySize(request, bufferSize);
-	
 	char[] responseBody = new char[bufferSize];
 	SteamWorks_GetHTTPResponseBodyData(request, responseBody, bufferSize);
 	delete request;
@@ -364,8 +354,7 @@ public void SQL_AddPlayerToHoursWhitelist(Database db, DBResultSet results, cons
 	pack.ReadString(auth, sizeof(auth));
 	delete pack;
 	
-	if (db == null || results == null)
-	{
+	if (db == null || results == null) {
 		LogError("[PS] Error while trying to hour whitelist user %s! %s", auth, error);
 		PrintToServer("[PS] Error while trying to hour whitelist user %s! %s", auth, error);
 		return;
@@ -416,29 +405,20 @@ public void SQL_QueryBansWhitelist(Database db, DBResultSet results, const char[
 	PrintToServer("[PS] User %s is ban whitelisted! Skipping ban check.", auth);
 }
 
-void RequestBans(int client, char[] auth) {
+public void RequestBans(int client, char[] auth) {
 	
-	Handle request = CreateRequest_RequestBans(client, auth);
+	char URL[512];
+	Format(URL, sizeof(URL), "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=%s&steamids=%s", cAPIKey, auth);
+
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, URL);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
+	SteamWorks_SetHTTPCallbacks(request, RequestBans_OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(request);
 	
 }
 
-Handle CreateRequest_RequestBans(int client, char[] auth) {
-	
-	char apikey[40];
-	g_cvApiKey.GetString(apikey, sizeof(apikey));
-	
-	char request_url[512];
-	
-	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=%s&steamids=%s", apikey, auth);
-	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
-	
-	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
-	SteamWorks_SetHTTPCallbacks(request, RequestBans_OnHTTPResponse);
-	return request;
-}
-
-public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
+public void RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Bans Request failure!");
@@ -447,7 +427,7 @@ public int RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bReque
 	}
 	
 	int client = GetClientOfUserId(userid);
-
+	
 	if (!client) {
 		delete request;
 		return;
@@ -525,7 +505,6 @@ public void SQL_QueryLevelWhitelist(Database db, DBResultSet results, const char
 	}
 	
 	if (!results.RowCount) {
-		
 		RequestLevel(client, auth);
 		return;
 	}
@@ -535,27 +514,17 @@ public void SQL_QueryLevelWhitelist(Database db, DBResultSet results, const char
 
 void RequestLevel(int client, char[] auth) {
 	
-	Handle request = CreateRequest_RequestLevel(client, auth);
-	SteamWorks_SendHTTPRequest(request);
+	char URL[512];
+	Format(URL, sizeof(URL), "http://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=%s&steamid=%s", cAPIKey, auth);
 	
-}
-
-Handle CreateRequest_RequestLevel(int client, char[] auth) {
-	
-	char apikey[40];
-	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
-	
-	char request_url[512];
-	
-	Format(request_url, sizeof(request_url), "http://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=%s&steamid=%s", apikey, auth);
-	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, URL);
 	
 	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestLevel_OnHTTPResponse);
-	return request;
+	SteamWorks_SendHTTPRequest(request);
 }
 
-public int RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
+public void RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Steam Level Request failure!");
@@ -633,27 +602,18 @@ public void SQL_AddPlayerToLevelWhitelist(Database db, DBResultSet results, cons
 
 public void CheckPrivateProfile(int client, char[] auth) {
 	
-	Handle request = CreateRequest_RequestPrivate(client, auth);
+	char URL[512];
+	Format(URL, sizeof(URL), "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", cAPIKey, auth);
+	
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, URL);
+	
+	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
+	SteamWorks_SetHTTPCallbacks(request, RequestPrivate_OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(request);
 	
 }
 
-Handle CreateRequest_RequestPrivate(int client, char[] auth) {
-	
-	char apikey[40];
-	GetConVarString(g_cvApiKey, apikey, sizeof(apikey));
-	
-	char request_url[512];
-	
-	Format(request_url, sizeof(request_url), "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=%s&steamids=%s", apikey, auth);
-	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodGET, request_url);
-	
-	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
-	SteamWorks_SetHTTPCallbacks(request, RequestPrivate_OnHTTPResponse);
-	return request;
-}
-
-public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
+public void RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
 		PrintToServer("[PS] HTTP Steam Private Profile Request failure!");
@@ -673,8 +633,6 @@ public int RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRe
 	char[] responseBodyPrivate = new char[bufferSize];
 	SteamWorks_GetHTTPResponseBodyData(request, responseBodyPrivate, bufferSize);
 	delete request;
-	
-	PrintToServer("%i", GetCommVisibState(responseBodyPrivate));
 
 	if (GetCommVisibState(responseBodyPrivate) == 1)
 		KickClient(client, "%t", "No Private Profile");
@@ -724,9 +682,8 @@ public int mPickWhitelist(Menu menu, MenuAction action, int param1, int param2) 
 	return 0;
 }
 
-public void MenuQuery(int param1, char[] info) {
+public void MenuQuery(int client, char[] info) {
 	
-	int client = param1;
 	char table[32];
 	
 	if (StrEqual(info, "hoursTable", false))
@@ -1044,4 +1001,4 @@ public void OnClientAuthorized(int client) {
 	if (g_cvEnablePrivateProfileCheck.BoolValue) {
 		CheckPrivateProfile(client, auth);
 	}
-} 
+}
