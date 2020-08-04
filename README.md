@@ -1,6 +1,6 @@
 # Profile Status
 
-Profile Status is a SourceMod plugin designed to restrict entrance to your server based on game hours, Steam bans, Steam levels and more.
+Profile Status is a SourceMod plugin designed to restrict entrance to any Source based game server based on game hours, Steam bans, Steam levels and more.
 
 ## Installation
 
