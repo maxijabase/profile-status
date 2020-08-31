@@ -22,6 +22,7 @@ public Plugin myinfo = {
 	description = "Limits server entrance to players.", 
 	version = PLUGIN_VERSION, 
 	url = "https://forums.alliedmods.net/showthread.php?p=2697650"
+	
 };
 
 // Global {
@@ -157,6 +158,7 @@ public void OnConfigsExecuted() {
 		Database.Connect(SQL_ConnectDatabase, cvDatabase);
 	else
 		PrintToServer("[PS] No usage of database detected! Aborting database connection.");
+		
 }
 
 /* Database connection, driver check and tables creation */
