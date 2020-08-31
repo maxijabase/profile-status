@@ -123,7 +123,6 @@ public void OnPluginStart() {
 	g_cvMaxLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_maxlevel", "", "Maximum level tolerated to enter the server (can be left blank for no maximum).");
 	
 	/* Private Profile Check Module */
-	
 	g_cvEnablePrivateProfileCheck  = AutoExecConfig_CreateConVar("sm_profilestatus_privateprofile_enable", "1", "Block Fully Private Profiles?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
 	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic Plugin Command.");
@@ -165,15 +164,18 @@ public void OnConfigsExecuted() {
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
 	if (db == null) {
+		
 		LogError("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		PrintToServer("[PS] Could not connect to database %s! Error: %s", cvDatabase, error);
 		return;
+		
 	}
 	
 	PrintToServer("[PS] Database connection to \"%s\" successful!", cvDatabase);
 	g_Database = db;
 	GetDriver();
 	CreateTable();
+	
 }
 
 public void GetDriver() {
@@ -210,6 +212,7 @@ public void CreateTable() {
 		g_Database.Query(SQL_CreateTable, sQuery3);
 		return;
 	}
+	
 	StrCat(sQuery1, sizeof(sQuery1), "CREATE TABLE IF NOT EXISTS ps_whitelist(");
 	StrCat(sQuery1, sizeof(sQuery1), "entry INT NOT NULL AUTO_INCREMENT, ");
 	StrCat(sQuery1, sizeof(sQuery1), "steamid VARCHAR(17) UNIQUE, ");
@@ -228,19 +231,22 @@ public void CreateTable() {
 	g_Database.Query(SQL_CreateTable, sQuery1);
 	g_Database.Query(SQL_CreateTable, sQuery2);
 	g_Database.Query(SQL_CreateTable, sQuery3);	
+	
 }
 
 public void SQL_CreateTable(Database db, DBResultSet results, const char[] error, any data) {
 	
-	if (db == null || results == null)
-	{
+	if (db == null || results == null) {
+		
 		LogError("[PS] Create Table Query failure! %s", error);
 		PrintToServer("[PS] Create Table Query failure! %s", error);
 		return;
+		
 	}
 	
 	c--;
 	if (!c) PrintToServer("[PS] Tables successfully created or were already created!");
+	
 }
 
 /* Hour Check Module */
@@ -255,6 +261,7 @@ public void QueryHoursWhitelist(int client, char[] auth) {
 	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_QueryHoursWhitelist, WhitelistReadQuery, pack);
+	
 }
 
 public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
@@ -265,20 +272,22 @@ public void SQL_QueryHoursWhitelist(Database db, DBResultSet results, const char
 	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
 	
-	if (!client) {
+	if (!client) 
 		return;
-	}
 	
 	if (db == null || results == null) {
+		
 		LogError("[PS] Error while checking if user %s is hour whitelisted! %s", auth, error);
 		PrintToServer("[PS] Error while checking if user %s is hour whitelisted! %s", auth, error);
 		return;
+		
 	}
 	
 	if (!results.RowCount) {
 		
 		RequestHours(client, auth);
 		return;
+		
 	}
 }
 
@@ -292,20 +301,26 @@ public void RequestHours(int client, char[] auth) {
 	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestHours_OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(request);
+	
 }
 
 public void RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		
 		PrintToServer("[PS] HTTP Hours Request failure!");
 		delete request;
 		return;
+		
 	}
 	
 	int client = GetClientOfUserId(userid);
+	
 	if (!client) {
+		
 		delete request;
 		return;
+		
 	}
 	
 	int bufferSize;
@@ -318,22 +333,30 @@ public void RequestHours_OnHTTPResponse(Handle request, bool bFailure, bool bReq
 	int totalPlayedTime = playedTime / 60;
 	
 	if (!totalPlayedTime) {
+		
 		KickClient(client, "%t", "Invisible Hours");
 		return;
+		
 	}
 	
 	if (minHours != 0) {
+		
 		if (totalPlayedTime < minHours) {
+			
 			KickClient(client, "%t", "Not Enough Hours", totalPlayedTime, minHours);
 			return;
 		}
+		
 	}
 	
 	if (g_cvHoursWhitelistAuto.BoolValue) {
+		
 		char auth[40];
 		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 		AddPlayerToHoursWhitelist(auth);
+		
 	}
+	
 }
 
 public void AddPlayerToHoursWhitelist(char[] auth) {
@@ -345,6 +368,7 @@ public void AddPlayerToHoursWhitelist(char[] auth) {
 	pack.WriteString(auth);
 	
 	g_Database.Query(SQL_AddPlayerToHoursWhitelist, WhitelistWriteQuery, pack);
+	
 }
 
 public void SQL_AddPlayerToHoursWhitelist(Database db, DBResultSet results, const char[] error, DataPack pack) {
@@ -355,12 +379,15 @@ public void SQL_AddPlayerToHoursWhitelist(Database db, DBResultSet results, cons
 	delete pack;
 	
 	if (db == null || results == null) {
+		
 		LogError("[PS] Error while trying to hour whitelist user %s! %s", auth, error);
 		PrintToServer("[PS] Error while trying to hour whitelist user %s! %s", auth, error);
 		return;
+		
 	}
 	
 	PrintToServer("[PS] Player %s successfully hour whitelisted!", auth);
+	
 }
 
 /* Ban Check Module */
@@ -386,23 +413,26 @@ public void SQL_QueryBansWhitelist(Database db, DBResultSet results, const char[
 	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
 	
-	if (!client) {
+	if (!client) 
 		return;
-	}
 	
 	if (db == null || results == null) {
+		
 		LogError("[PS] Error while checking if user %s is ban whitelisted! %s", auth, error);
 		PrintToServer("[PS] Error while checking if user %s is ban whitelisted! %s", auth, error);
 		return;
+		
 	}
 	
 	if (!results.RowCount) {
 		
 		RequestBans(client, auth);
 		return;
+		
 	}
 	
 	PrintToServer("[PS] User %s is ban whitelisted! Skipping ban check.", auth);
+	
 }
 
 public void RequestBans(int client, char[] auth) {
@@ -421,16 +451,20 @@ public void RequestBans(int client, char[] auth) {
 public void RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		
 		PrintToServer("[PS] HTTP Bans Request failure!");
 		delete request;
 		return;
+		
 	}
 	
 	int client = GetClientOfUserId(userid);
 	
 	if (!client) {
+		
 		delete request;
 		return;
+		
 	}
 	
 	int bufferSize;
@@ -445,15 +479,18 @@ public void RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 			
 			if (!GetDaysSinceLastVAC(responseBodyBans) || !GetVACAmount(responseBodyBans))
 				KickClient(client, "%t", "VAC Kicked");
+				
 			else if (GetDaysSinceLastVAC(responseBodyBans) < vacDays)
 				KickClient(client, "%t", "VAC Kicked Days", vacDays);
+				
 			else if (GetVACAmount(responseBodyBans) > vacAmount)
 				KickClient(client, "%t", "VAC Kicked Amount", vacAmount);
+				
 		}
 		
 		if (IsCommunityBanned(responseBodyBans))
 			if (g_cvCommunityBan.BoolValue)
-			KickClient(client, "%t", "Community Ban Kicked");
+				KickClient(client, "%t", "Community Ban Kicked");
 		
 		if (GetGameBans(responseBodyBans) > gameBans)
 			KickClient(client, "%t", "Game Bans Exceeded", gameBans);
@@ -462,10 +499,11 @@ public void RequestBans_OnHTTPResponse(Handle request, bool bFailure, bool bRequ
 		
 		if (economyBan == 1)
 			if (StrContains(EcBan, "banned", false) != -1)
-			KickClient(client, "%t", "Economy Ban Kicked");
+				KickClient(client, "%t", "Economy Ban Kicked");
+				
 		if (economyBan == 2)
 			if (StrContains(EcBan, "banned", false) != -1 || StrContains(EcBan, "probation", false) != -1)
-			KickClient(client, "%t", "Economy Ban/Prob Kicked");
+				KickClient(client, "%t", "Economy Ban/Prob Kicked");
 		
 	}
 	
@@ -494,22 +532,26 @@ public void SQL_QueryLevelWhitelist(Database db, DBResultSet results, const char
 	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
 	
-	if (!client) {
+	if (!client) 
 		return;
-	}
 	
 	if (db == null || results == null) {
+		
 		LogError("[PS] Error while checking if user %s is level whitelisted! %s", auth, error);
 		PrintToServer("[PS] Error while checking if user %s is level whitelisted! %s", auth, error);
 		return;
+		
 	}
 	
 	if (!results.RowCount) {
+		
 		RequestLevel(client, auth);
 		return;
+		
 	}
 	
 	PrintToServer("[PS] User %s is level whitelisted! Skipping level check.", auth);
+	
 }
 
 void RequestLevel(int client, char[] auth) {
@@ -522,21 +564,26 @@ void RequestLevel(int client, char[] auth) {
 	SteamWorks_SetHTTPRequestContextValue(request, GetClientUserId(client));
 	SteamWorks_SetHTTPCallbacks(request, RequestLevel_OnHTTPResponse);
 	SteamWorks_SendHTTPRequest(request);
+	
 }
 
 public void RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		
 		PrintToServer("[PS] HTTP Steam Level Request failure!");
 		delete request;
 		return;
+		
 	}
 	
 	int client = GetClientOfUserId(userid);
 
 	if (!client) {
+		
 		delete request;
 		return;
+		
 	}
 	
 	int bufferSize;
@@ -548,25 +595,40 @@ public void RequestLevel_OnHTTPResponse(Handle request, bool bFailure, bool bReq
 	int minlevel = g_cvMinLevel.IntValue;
 	int maxlevel = g_cvMaxLevel.IntValue;
 	int level = GetSteamLevel(responseBodyLevel);
+	
 	if (level == -1) {
+		
 		KickClient(client, "%t", "Invisible Level");
 		return;
+		
 	}
+	
 	else if (level < minlevel) {
+		
 		KickClient(client, "%t", "Low Level", level, minlevel);
 		return;
+		
 	}
+	
 	if (maxlevel != 0) {
+		
 		if (level > maxlevel) {
+			
 			KickClient(client, "%t", "High Level", level, maxlevel);
 			return;
+			
 		}
+		
 	}
+	
 	if (g_cvLevelWhitelistAuto.BoolValue) {
+		
 		char auth[40];
 		GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 		AddPlayerToLevelWhitelist(auth);
+		
 	}
+	
 }
 
 public void AddPlayerToLevelWhitelist(char[] auth) {
@@ -588,14 +650,16 @@ public void SQL_AddPlayerToLevelWhitelist(Database db, DBResultSet results, cons
 	pack.ReadString(auth, sizeof(auth));
 	delete pack;
 	
-	if (db == null || results == null)
-	{
+	if (db == null || results == null) {
+		
 		LogError("[PS] Error while trying to level whitelist user %s! %s", auth, error);
 		PrintToServer("[PS] Error while trying to level whitelist user %s! %s", auth, error);
 		return;
+		
 	}
 	
 	PrintToServer("[PS] Player %s successfully level whitelisted!", auth);
+	
 }
 
 /* Private Profile Check Module */
@@ -616,16 +680,20 @@ public void CheckPrivateProfile(int client, char[] auth) {
 public void RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode, int userid) {
 	
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode200OK) {
+		
 		PrintToServer("[PS] HTTP Steam Private Profile Request failure!");
 		delete request;
 		return;
+		
 	}
 	
 	int client = GetClientOfUserId(userid);
 
 	if (!client) {
+		
 		delete request;
 		return;
+		
 	}
 	
 	int bufferSize;
@@ -636,6 +704,7 @@ public void RequestPrivate_OnHTTPResponse(Handle request, bool bFailure, bool bR
 
 	if (GetCommVisibState(responseBodyPrivate) == 1)
 		KickClient(client, "%t", "No Private Profile");
+		
 }
 
 /* Whitelist Menu */
@@ -648,6 +717,7 @@ public void OpenWhitelistMenu(int client) {
 	menu.AddItem(CHOICE3, "Level Whitelist");
 	menu.ExitButton = true;
 	menu.Display(client, 20);
+	
 }
 
 public int mPickWhitelist(Menu menu, MenuAction action, int param1, int param2) {
@@ -678,7 +748,9 @@ public int mPickWhitelist(Menu menu, MenuAction action, int param1, int param2) 
 			delete menu;
 			
 		}
+		
 	}
+	
 	return 0;
 }
 
@@ -688,8 +760,10 @@ public void MenuQuery(int client, char[] info) {
 	
 	if (StrEqual(info, "hoursTable", false))
 		Format(table, sizeof(table), "ps_whitelist");
+		
 	if (StrEqual(info, "bansTable", false))
 		Format(table, sizeof(table), "ps_whitelist_bans");
+		
 	if (StrEqual(info, "levelTable", false))
 		Format(table, sizeof(table), "ps_whitelist_level");
 	
@@ -701,6 +775,7 @@ public void MenuQuery(int client, char[] info) {
 	pack.WriteCell(GetClientUserId(client));
 	
 	g_Database.Query(SQL_MenuQuery, query, pack);
+	
 }
 
 public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, DataPack pack) {
@@ -711,9 +786,8 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	int client = GetClientOfUserId(pack.ReadCell());
 	delete pack;
 	
-	if (!client) {
+	if (!client) 
 		return;
-	}
 	
 	if (db == null || results == null) {
 		
@@ -721,14 +795,17 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 		PrintToServer("[PS] Error while querying %s for menu display! %s", table, error);
 		CPrintToChat(client, "[PS] Error while querying %s for menu display! %s", table, error);
 		return;
+		
 	}
 		
 	char type[16];
 	
 	if (StrEqual(table, "hoursTable", false))
 		Format(type, sizeof(type), "Hours");
+		
 	if (StrEqual(table, "bansTable", false))
 		Format(type, sizeof(type), "Bans");
+		
 	if (StrEqual(table, "levelTable", false))
 		Format(type, sizeof(type), "Level");
 			
@@ -744,19 +821,27 @@ public void SQL_MenuQuery(Database db, DBResultSet results, const char[] error, 
 	int count;
 	
 	if (!results.FetchRow()) {
+		
 		CPrintToChat(client, "%t", "No Results");
 		OpenWhitelistMenu(client);
 		return;
-	} else {
+		
+	} 
+	
+	else {
+		
 		do {
+			
 			count++;
 			results.FetchString(steamidCol, steamid, sizeof(steamid));
 			IntToString(count, id, sizeof(id));
 			menu.AddItem(id, steamid, ITEMDRAW_RAWLINE);
 			
 		} while (results.FetchRow());
+		
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
+		
 	}
 	
 }
@@ -768,13 +853,18 @@ public int TablesMenu(Menu menu, MenuAction action, int param1, int param2) {
 		case MenuAction_Cancel: {
 			
 			if (param2 == MenuCancel_ExitBack) {
+				
 				OpenWhitelistMenu(param1);
 				delete menu;
+				
 			}
+			
 		}
 		
 	}
+	
 	return 0;
+	
 }
 
 /* Command */
@@ -787,32 +877,47 @@ public Action Command_Generic(int client, int args) {
 	GetCmdArg(3, arg3, sizeof(arg3));
 	
 	if (StrEqual(arg1, "whitelist", false)) {
+		
 		if (!client) {
+			
 			ReplyToCommand(client, "You cannot open the menu whitelist from console!");
 			return Plugin_Handled;
-		} else {
+			
+		} 
+		
+		else {
+			
 			OpenWhitelistMenu(client);
 			return Plugin_Handled;
+			
 		}
+		
 	}
 	
 	if (!StrEqual(arg1, "hours", false) && !StrEqual(arg1, "bans", false) && !StrEqual(arg1, "level", false)) {
+		
 		CReplyToCommand(client, "%t", "Command Generic Usage");
 		return Plugin_Handled;
+		
 	}
 	
 	if ((!StrEqual(arg2, "add", false) && !StrEqual(arg2, "remove", false) && !StrEqual(arg2, "check", false)) || StrEqual(arg3, "")) {
+		
 		CReplyToCommand(client, "%t", "Command Generic Usage");
 		return Plugin_Handled;
+		
 	}
 	
 	if (!SimpleRegexMatch(arg3, "^7656119[0-9]{10}$")) {
+		
 		CReplyToCommand(client, "%t", "Invalid STEAMID");
 		return Plugin_Handled;
+		
 	}
 	
 	Command(arg1, arg2, arg3, client);
 	return Plugin_Handled;
+	
 }
 
 public void Command(char[] arg1, char[] arg2, char[] arg3, int client) {
@@ -821,24 +926,32 @@ public void Command(char[] arg1, char[] arg2, char[] arg3, int client) {
 	
 	if (StrEqual(arg1, "hours", false))
 		Format(table, sizeof(table), "ps_whitelist");
+		
 	if (StrEqual(arg1, "bans", false))
 		Format(table, sizeof(table), "ps_whitelist_bans");
+		
 	if (StrEqual(arg1, "level", false))
 		Format(table, sizeof(table), "ps_whitelist_level");
+		
 	
 	if (StrEqual(arg2, "add"))
 		Format(query, sizeof(query), "INSERT INTO %s (steamid) VALUES (%s);", table, arg3);
+		
 	if (StrEqual(arg2, "remove"))
 		Format(query, sizeof(query), "DELETE FROM %s WHERE steamid='%s';", table, arg3);
+		
 	if (StrEqual(arg2, "check"))
 		Format(query, sizeof(query), "SELECT * FROM %s WHERE steamid='%s';", table, arg3);
+		
 	
 	DataPack pack = new DataPack();
 	
 	if (!client)
 		pack.WriteCell(client);
+		
 	else
 		pack.WriteCell(GetClientUserId(client));
+		
 	pack.WriteString(arg1);
 	pack.WriteString(arg2);
 	pack.WriteString(arg3);
@@ -852,10 +965,13 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 	pack.Reset();
 	int client;
 	int whateverarrived = pack.ReadCell();
+	
 	if(whateverarrived == 0)
 		client = whateverarrived;
+		
 	else
 		client = GetClientOfUserId(whateverarrived);
+		
 	char arg1[30], arg2[30], arg3[30];
 	pack.ReadString(arg1, sizeof(arg1));
 	pack.ReadString(arg2, sizeof(arg2));
@@ -870,112 +986,174 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 			PrintToServer("[PS] Error while adding %s to the %s whitelist! %s", arg3, arg1, error);
 			CReplyToCommand(client, "[PS] Error while adding %s to the %s whitelist! %s", arg3, arg1, error);
 			return;
+			
 		}
 		
 		if (results == null) {
+			
 			if (StrEqual(arg1, "hours", false)) {
+				
 				CReplyToCommand(client, "%t", "Nothing Hour Added", arg3);
 				return;
-			}
-			if (StrEqual(arg1, "bans", false)) {
-				CReplyToCommand(client, "%t", "Nothing Ban Added", arg3);
-				return;
-			}
-			if (StrEqual(arg1, "level", false)) {
-				CReplyToCommand(client, "%t", "Nothing Level Added", arg3);
 				
 			}
+			
+			if (StrEqual(arg1, "bans", false)) {
+				
+				CReplyToCommand(client, "%t", "Nothing Ban Added", arg3);
+				return;
+				
+			}
+			
+			if (StrEqual(arg1, "level", false)) {
+				
+				CReplyToCommand(client, "%t", "Nothing Level Added", arg3);
+				return;
+			}
+			
 		}
+		
 		if (StrEqual(arg1, "hours", false)) {
+			
 			CReplyToCommand(client, "%t", "Successfully Hour Added", arg3);
 			return;
+			
 		}
+		
 		if (StrEqual(arg1, "bans", false)) {
+			
 			CReplyToCommand(client, "%t", "Successfully Ban Added", arg3);
 			return;
+			
 		}
+		
 		if (StrEqual(arg1, "level", false)) {
+			
 			CReplyToCommand(client, "%t", "Successfully Level Added", arg3);
 			return;
+			
 		}
+		
 	}
 	
 	if (StrEqual(arg2, "remove")) {
 		
-		if (db == null || results == null)
-		{
+		if (db == null || results == null) {
+			
 			LogError("[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
 			PrintToServer("[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
 			CReplyToCommand(client, "[PS] Error while removing %s from the %s whitelist! %s", arg3, arg1, error);
 			return;
+			
 		}
 		
 		if (!results.AffectedRows) {
+			
 			if (StrEqual(arg1, "hours", false)) {
+				
 				CReplyToCommand(client, "%t", "Nothing Hour Removed", arg3);
 				return;
+				
 			}
+			
 			if (StrEqual(arg1, "bans", false)) {
+				
 				CReplyToCommand(client, "%t", "Nothing Ban Removed", arg3);
 				return;
+				
 			}
+			
 			if (StrEqual(arg1, "level", false)) {
+				
 				CReplyToCommand(client, "%t", "Nothing Level Removed", arg3);
 				return;
+				
 			}
+			
 		}
 		
 		if (StrEqual(arg1, "hours", false)) {
+			
 			CReplyToCommand(client, "%t", "Successfully Hour Removed", arg3);
 			return;
-		}
-		if (StrEqual(arg1, "bans", false)) {
-			CReplyToCommand(client, "%t", "Successfully Ban Removed", arg3);
-			return;
-		}
-		if (StrEqual(arg1, "level", false)) {
-			CReplyToCommand(client, "%t", "Successfully Level Removed", arg3);
 			
 		}
+		
+		if (StrEqual(arg1, "bans", false)) {
+			
+			CReplyToCommand(client, "%t", "Successfully Ban Removed", arg3);
+			return;
+			
+		}
+		
+		if (StrEqual(arg1, "level", false)) {
+			
+			CReplyToCommand(client, "%t", "Successfully Level Removed", arg3);
+			return;
+			
+		}
+		
 	}
 	
 	if (StrEqual(arg2, "check")) {
 		
-		if (db == null || results == null)
-		{
+		if (db == null || results == null) {
+			
 			LogError("[PS] Error while issuing check command on %s! %s", arg3, error);
 			PrintToServer("[PS] Error while issuing check command on %s! %s", arg3, error);
 			CReplyToCommand(client, "[PS] Error while issuing check command on %s! %s", arg3, error);
 			return;
+			
 		}
 		
 		if (!results.RowCount) {
+			
 			if (StrEqual(arg1, "hours", false)) {
+				
 				CReplyToCommand(client, "%t", "Hour Check Not Whitelisted", arg3);
 				return;
+				
 			}
+			
 			if (StrEqual(arg1, "bans", false)) {
+				
 				CReplyToCommand(client, "%t", "Ban Check Not Whitelisted", arg3);
 				return;
+				
 			}
+			
 			if (StrEqual(arg1, "level", false)) {
+				
 				CReplyToCommand(client, "%t", "Level Check Not Whitelisted", arg3);
 				return;
+				
 			}
+			
 		}
+		
 		if (StrEqual(arg1, "hours", false)) {
+			
 			CReplyToCommand(client, "%t", "Hour Check Whitelisted", arg3);
 			return;
+			
 		}
+		
 		if (StrEqual(arg1, "bans", false)) {
+			
 			CReplyToCommand(client, "%t", "Ban Check Whitelisted", arg3);
 			return;
+			
 		}
+		
 		if (StrEqual(arg1, "level", false)) {
+			
 			CReplyToCommand(client, "%t", "Level Check Whitelisted", arg3);
 			return;
+			
 		}
+		
 	}
+	
 }
 
 /* On Client Authorized */
@@ -989,27 +1167,56 @@ public void OnClientAuthorized(int client) {
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
 	if (g_cvEnableHourCheck.BoolValue) {
+		
 		if (g_cvHoursWhitelistEnable.BoolValue) {
+			
 			QueryHoursWhitelist(client, auth);
-		} else
+			
+		}
+		
+		else {
+			
 			RequestHours(client, auth);
+			
+		}
+		
 	}
 	
 	if (g_cvEnableBanDetection.BoolValue) {
+		
 		if (g_cvBansWhitelist.BoolValue) {
+			
 			QueryBansWhitelist(client, auth);
-		} else
+			
+		} 
+		
+		else {
+			
 			RequestBans(client, auth);
+			
+		}
 	}
 	
 	if (g_cvEnableLevelCheck.BoolValue) {
+		
 		if (g_cvLevelWhitelistEnable.BoolValue) {
+			
 			QueryLevelWhitelist(client, auth);
-		} else
+			
+		} 
+		
+		else {
+			
 			RequestLevel(client, auth);
+			
+		}
+		
 	}
 	
 	if (g_cvEnablePrivateProfileCheck.BoolValue) {
+		
 		CheckPrivateProfile(client, auth);
+		
 	}
+	
 }
