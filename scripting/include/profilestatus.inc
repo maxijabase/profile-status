@@ -242,11 +242,6 @@ stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan2) {
  * @param responseBody          API response body.
  */
 
-<<<<<<< Updated upstream
-stock bool IsAPIKeyCorrect(char[] cAPIKey) {
-	return (cAPIKey[0] == '\0' || !SimpleRegexMatch(cAPIKey, "^[0-9A-Z]*$")) ? false : true;
-=======
 stock bool IsAPIKeyCorrect(char[] cAPIKey2) {
 	return (cAPIKey2[0] == '\0' || !SimpleRegexMatch(cAPIKey2, "^[0-9A-Z]*$")) ? false : true;
->>>>>>> Stashed changes
 }

@@ -1,4 +1,4 @@
- /* Database connection, driver check and tables creation */
+/* Database connection, driver check and tables creation */
 
 public void SQL_ConnectDatabase(Database db, const char[] error, any data) {
 	
@@ -66,7 +66,6 @@ public void CreateTable() {
 	g_Database.Query(SQL_CreateTable, sQuery1);
 	g_Database.Query(SQL_CreateTable, sQuery2);
 	g_Database.Query(SQL_CreateTable, sQuery3);	
-	
 }
 
 public void SQL_CreateTable(Database db, DBResultSet results, const char[] error, any data) {

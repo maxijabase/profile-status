@@ -2,14 +2,11 @@
 {
 	"Not Enough Hours"
 	{
-		"#format" "{1:i},{2:i}"		
+		"#format" "{1:i},{2:i}"
+		
 		"en" "You have {1} out of the {2} hours required to join this server!"
 		"es" "¡Tienes {1} de las {2} horas necesarias para unirte a este servidor!"
-<<<<<<< Updated upstream
-		"pt" "Você tem {1} das {2} horas necessárias para se conectar neste servidor!"
-=======
 		"pt" "Você tem {1} das {2} horas necessárias pra se unir a este servidor!"
->>>>>>> Stashed changes
 		"pl" "Masz tylko {1} z {2} wymaganych godzin, żeby dołączyć do serwera!"
 	}
 	"Invisible Hours"
@@ -17,380 +14,263 @@
 		"en" "Error while retrieving your hours! Make sure they're public"
 		"es" "¡Error al intentar obtener tus horas de juego! Asegúrate de que sean públicas" 
 		"pt" "Erro ao tentar obter suas horas de jogo! Verifique que elas sejam públicas"
-<<<<<<< Updated upstream
-		"pl" "Błąd przy pozyskiwaniu informacji na temat twoich godzin! Upewnij się, że są publiczne"
-=======
 		"pl" "Błąd przy pozyskiwaniu informacji na temat twoich godzin! Upewnij się, że są publiczne!"
->>>>>>> Stashed changes
 	}
 	"Invalid STEAMID"
 	{
 		"en" "{green}[PS]{default} Invalid STEAMID!"
-<<<<<<< Updated upstream
-		"es" "{green}[PS]{default} ¡STEAMID Inválido!"
-		"pt" "{green}[PS]{default} STEAMID Inválido!"
-=======
 		"es" "{green}[PS]{default} ¡STEAMID inválido!"
 		"pt" "{green}[PS]{default} STEAMID inválido!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Niepoprawne STEAMID!"
 	}
 	"Hour Check Not Whitelisted"
 	{
-<<<<<<< Updated upstream
-		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}hour whitelisted!"
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de horas!"
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {red}não está {default}na whitelist de horas!"
-=======
 		"#format" "{1:s}"
 		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}hour whitelisted!"
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de horas."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist das horas!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {red}nie jest {default}na hour whitelist!"
 	}
 	"Ban Check Not Whitelisted"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}ban whitelisted!"
-<<<<<<< Updated upstream
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de bans!"
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {red}não está {default}na whitelist de bans!"
-=======
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de bans."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos bans!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {red}nie jest {default}na ban whitelist!"
 	}
 	"Level Check Not Whitelisted"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {default}is {red}not {default}level whitelisted!"
-<<<<<<< Updated upstream
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de niveles!"
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {red}não está {default}na whitelist de níveis!"
-=======
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {red}no está {default}en la whitelist de niveles."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {red}não está {default}na whitelist dos níveis!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {red}nie jest {default}na level whitelist!"
 	}	
 	"Hour Check Whitelisted"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}hour whitelisted!"
-<<<<<<< Updated upstream
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de horas!"
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {green}está {default}na whitelist de horas!"
-=======
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de horas."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist das horas!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {green}jest {default}na hour whitelist!"
 	}
 	"Ban Check Whitelisted"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}ban whitelisted!"
-<<<<<<< Updated upstream
-		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de bans!"
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {green}está {default}na whitelist de bans!"
-=======
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de bans."
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos bans!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {green}jest {default}ban whitelist!"
 	}
 	"Level Check Whitelisted"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Steam ID {gray}{1} {green}is {default}level whitelisted!"
 		"es" "{green}[PS]{default} El Steam ID {gray}{1} {green}está {default}en la whitelist de niveles."
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Steam ID {gray}{1} {green}está {default}na whitelist de níveis!"
-=======
 		"pt" "{green}[PS]{default} A Steam ID {gray}{1} {green}está {default}na whitelist dos níveis!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Steam ID {gray}{1} {green}jest {default}na level whitelist!"
 	}
 	"Successfully Hour Removed"
 	{
-		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
-		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist de horas com sucesso!"
-=======
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
->>>>>>> Stashed changes
-		"pl" "{green}[PS]{default} Pomyślnie usunięto {gray}{1} {default}z hours whitelist!"
-	}
-	"Successfully Ban Removed"
-	{
-<<<<<<< Updated upstream
-		"#format" "{1:s}"		
-		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the bans whitelist!"
-		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de bans con éxito!"
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist de bans com sucesso!"
-		"pl" "{green}[PS]{default} Pomyślnie usunięto {gray}{1} {default}z bans whitelist!"
-=======
 		"#format" "{1:s}"
 		
 		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
 		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
 		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
 		"pl" "{green}[PS]{default} Pomyślnie usunięto {gray}{1} {default}z hours whitelist!"
->>>>>>> Stashed changes
+	}
+	"Successfully Ban Removed"
+	{
+		"#format" "{1:s}"
+		
+		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the hours whitelist!"
+		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de horas con éxito!"
+		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist das horas com sucesso!"
+		"pl" "{green}[PS]{default} Pomyślnie usunięto {gray}{1} {default}z hours whitelist!"
 	}
 	"Successfully Level Removed"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Successfully removed {gray}{1} {default}from the level whitelist!"
 		"es" "{green}[PS]{default} ¡Removida ID {gray}{1} {default}de la whitelist de niveles con éxito!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist de níveis com sucesso!"
-=======
 		"pt" "{green}[PS]{default} Removida ID {gray}{1} {default}da whitelist dos níveis com sucesso!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Pomyślnie usunięto {gray}{1} {default}z hours level whitelist!"
 	}
 	"Nothing Hour Removed"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in hours whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de horas!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist de horas!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist das horas!"
->>>>>>> Stashed changes
 		"en" "{green}[PS]{default} ID {gray}{1} {default}nie jest na hours whitelist!"
 	}
 	"Nothing Ban Removed"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in bans whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de bans!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist de bans!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos bans!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} ID {gray}{1} {default}nie jest na bans whitelist!"
 	}
 	"Nothing Ban Removed"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was not in level whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}no estaba en la whitelist de niveles!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist de níveis!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}não estava na whitelist dos níveis!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} ID {gray}{1} {default}nie jest na level whitelist!"
 	}
 	"Successfully Hour Added"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the hours whitelist!"
 		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de horas!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist de horas com sucesso!"
-=======
 		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist das horas com sucesso!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Pomyślnie dodano {gray}{1} {default}do hours whitelist!"
 	}
 	"Successfully Ban Added"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the bans whitelist!"
 		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de bans!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist de bans com sucesso!"
-=======
 		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos bans com sucesso!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Pomyślnie dodano {gray}{1} {default}do bans whitelist!"
 	}
 	"Successfully Level Added"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} Successfully added {gray}{1} {default}to the level whitelist!"
 		"es" "{green}[PS]{default} ¡Agregada la ID {gray}{1} {default}a la whitelist de niveles!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist de níveis com sucesso!"
-=======
 		"pt" "{green}[PS]{default} Adicionada a ID {gray}{1} {default}à whitelist dos níveis com sucesso!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} Pomyślnie dodano {gray}{1} {default}do level whitelist!"
 	}	
 	"Nothing Hour Added"
 	{
-		"#format" "{1:s}"		
+		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in hours whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de horas!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist de horas!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist das horas!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} ID {gray}{1} {default}jest już na hours whitelist!"
 	}
 	"Nothing Ban Added"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in bans whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de bans!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist de bans!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos bans!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} ID {gray}{1} {default}jest już na bans whitelist!"
 	}
 	"Nothing Level Added"
 	{
-		"#format" "{1:s}"		
+		"#format" "{1:s}"
+		
 		"en" "{green}[PS]{default} ID {gray}{1} {default}was already in level whitelist!"
 		"es" "{green}[PS]{default} ¡La ID {gray}{1} {default}ya estaba en la whitelist de niveles!"
-<<<<<<< Updated upstream
-		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist de níveis!"
-=======
 		"pt" "{green}[PS]{default} ID {gray}{1} {default}já estava na whitelist dos níveis!"
->>>>>>> Stashed changes
 		"pl" "{green}[PS]{default} ID {gray}{1} {default}jest już na level whitelist!"
 	}
 	"Command Generic Usage"
 	{
-<<<<<<< Updated upstream
-		"en" "{green}[PS]{default} Usage: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
-		"es" "{green}[PS]{default} Uso: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
-		"pt" "{green}[PS]{default} Uso: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
-		"pl" "{green}[PS]{default} Usage: sm_ps <hours|bans|level> <add|remove|check> <STEAMID64>"
-=======
 		"en" "{green}[PS]{default} Usage: sm_ps <hours|bans> <add|remove|check> <STEAMID64>"
 		"es" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
 		"pt" "{green}[PS]{default} Uso: sm_ps <add|remove|check> <STEAMID64>"
 		"pl" "{green}[PS]{default} Usage: sm_ps <hours|bans> <add|remove|check> <STEAMID64>"
->>>>>>> Stashed changes
 	}
 	"VAC Kicked"
 	{
 		"en" "This server disallows VAC Banned players."
 		"es" "Este servidor prohíbe jugadores con VAC Bans."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players com VAC Ban."
-=======
 		"pt" "Esse servidor proíbe jogadores com VAC Ban."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy z blokadą VAC."
 	}
 	"VAC Kicked Days"
 	{
-		"format" "{1:i}"		
+		"format" "{1:i}"
+		
 		"en" "This server disallows players with less than {1} days since their last VAC Ban."
 		"es" "Este servidor prohíbe jugadores con menos de {1} días desde su último VAC Ban."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players com menos de {1} dias desde o seu último VAC Ban."
-=======
 		"pt" "Esse servidor proíbe jogadores com menos de {1} dias desde o seu último VAC Ban."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy, którzy mają mniej niż {1} dni od ostatniej blokady VAC."
 	}
 	"VAC Kicked Amount"
 	{
-		"format" "{1:i}"		
+		"format" "{1:i}"
+		
 		"en" "This server disallows players with more than {1} VAC Bans."
 		"es" "Este servidor prohíbe jugadores con más de {1} VAC Bans."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players com mais de {1} VAC Bans."
-=======
 		"pt" "Esse servidor proíbe jogadores com mais de {1} VAC Bans."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy, którzy mają więcej niż {1} blokad VAC."
 	}
 	"Community Ban Kicked"
 	{
 		"en" "This server disallows Steam Community Banned players."
 		"es" "Este servidor prohíbe jugadores baneados de la Comunidad de Steam."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players banidos da Comunidade de Steam."
-=======
 		"pt" "Esse servidor proíbe jogadores banidos da Comunidade de Steam."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy z Steam Community Ban."
 	}
 	"Game Bans Exceeded"
 	{
-		"format" "{1:i}"		
+		"format" "{1:i}"
+		
 		"en" "This server disallows players with more than {1} Game Bans."
 		"es" "Este servidor prohíbe jugadores con más de {1} Game Bans."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players com mais de {1} Game Bans."
-=======
 		"pt" "Esse servidor proíbe jogadores com mais de {1} Game Bans."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy, którzy mają więcej niż {1} Game Bans."
 	}
 	"Economy Ban Kicked"
 	{
 		"en" "This server disallows Trade Banned players."
 		"es" "Este servidor prohíbe jugadores con Trade Ban."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players com Trade Ban."
-=======
 		"pt" "Esse servidor proíbe jogadores com Trade Ban."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy z Trade Banem."
 	}
 	"Economy Ban/Prob Kicked"
 	{
 		"en" "This server disallows players with Trade Ban and Probation states."
 		"es" "Este servidor prohíbe jugadores en situación de Trade Ban o Probation."
-<<<<<<< Updated upstream
-		"pt" "Esse servidor proíbe players em situação de Trade Ban ou Probation."
-=======
 		"pt" "Esse servidor proíbe jogadores em situação de Trade Ban ou Probation."
->>>>>>> Stashed changes
 		"pl" "Ten serwer nie dopuszcza graczy z Trade Banem oraz Probation states."
 	}
 	"Invisible Level"
 	{
 		"en" "Error while retrieving your Steam level! Make sure your profile is public."
 		"es" "¡Error al obtener tu nivel de Steam! Asegúrate de que tu perfil sea público."
-<<<<<<< Updated upstream
-		"pt" "Erro ao obter seu Nível Steam! Verifique se seu perfil está público."
-=======
 		"pt" "Erro ao obter o seu nível de Steam! Verifique que o seu perfil seja público."
->>>>>>> Stashed changes
 		"pl" "Bląd przy pozyskiwaniu twojego lvl steam! Upewnij się, że twój profil jest publiczny."
 	}
 	"Low Level"
 	{
 		"#format" "{1:i},{2:i}"
+		
 		"en" "Your Steam level is {1}. Only levels {2} and above are allowed in this server."
 		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para arriba son permitidos en este servidor."
-<<<<<<< Updated upstream
-		"pt" "Seu Nível Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
-=======
 		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para acima são aceitos nesse servidor."
->>>>>>> Stashed changes
 		"pl" "Masz {1} level steam. Jedynie levele {2} i powyżej mają dostęp do tego serwera."
 	}
 	"High Level"
 	{
-		"#format" "{1:i},{2:i}"		
+		"#format" "{1:i},{2:i}"
+		
 		"en" "Your Steam level is {1}. Only levels {2} and below are allowed in this server."
 		"es" "Tu nivel de Steam es {1}. Sólo niveles de {2} para abajo son permitidos en este servidor."
-<<<<<<< Updated upstream
-		"pt" "Seu Nível Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
-=======
 		"pt" "O seu nível de Steam é {1}. Somente níveis {2} para abaixo são aceitos nesse servidor."
->>>>>>> Stashed changes
 		"pl" "Masz {1} level steam. Jedynie levele {2} i poniżej mają dostęp do tego serwera."
 	}
 	"No Private Profile"
