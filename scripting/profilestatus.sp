@@ -1,20 +1,40 @@
 #include <sourcemod>
 #include <regex>
+<<<<<<< Updated upstream
 #include "multicolors"
 #include "include/steamworks"
 #include "include/stocksoup/version"
 #include "include/profilestatus"
 #include "include/autoexecconfig"
+=======
+#include "include/steamworks"
+#include "multicolors"
+#include "include/stocksoup/version"
+#include "include/profilestatus"
+#include "include/autoexecconfig"
+
+#include "profilestatus/ps_global.sp"
+#include "profilestatus/ps_hours.sp"
+#include "profilestatus/ps_bans.sp"
+#include "profilestatus/ps_level.sp"
+#include "profilestatus/ps_private.sp"
+#include "profilestatus/ps_database.sp"
+#include "profilestatus/ps_menu.sp"
+#include "profilestatus/ps_command.sp"
+>>>>>>> Stashed changes
 
 #pragma semicolon 1
 #pragma newdecls required
 
 #define PLUGIN_VERSION "2.3.5"
 
+<<<<<<< Updated upstream
 #define CHOICE1 "hoursTable"
 #define CHOICE2 "bansTable"
 #define CHOICE3 "levelTable"
 
+=======
+>>>>>>> Stashed changes
 public Plugin myinfo = {
 	
 	name = "[ANY] Profile Status", 
@@ -25,6 +45,7 @@ public Plugin myinfo = {
 	
 };
 
+<<<<<<< Updated upstream
 // Global {
 
 /* Handles */
@@ -83,6 +104,9 @@ static int
 //}
 
 /* On Plugin Start */
+=======
+/* Plugin Start */
+>>>>>>> Stashed changes
 
 public void OnPluginStart() {
 	
@@ -102,30 +126,41 @@ public void OnPluginStart() {
 	g_cvDatabase 			 = AutoExecConfig_CreateConVar("sm_profilestatus_database", "storage-local", "Database name. Change this value only if you're using another database set in databases.cfg");
 	
 	/* Hour Check Module */
-	g_cvEnableHourCheck 	 = AutoExecConfig_CreateConVar("sm_profilestatus_hours_enable", "1", "Enable Hour Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvEnableHourCheck 	 = AutoExecConfig_CreateConVar("sm_profilestatus_hours_enable", "1", "Enable Hour Checking functions?", _, true, 0.0, true, 1.0);
 	g_cvMinHours 			 = AutoExecConfig_CreateConVar("sm_profilestatus_hours_minhours", "", "Minimum of hours requiered to enter the server.");
 	g_cvHoursWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_hours_whitelist_enable", "1", "Enable Hours Check Whitelist?");
-	g_cvHoursWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_hours_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvHoursWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_hours_whitelist_auto", "1", "Whitelist members that have been checked automatically?", _, true, 0.0, true, 1.0);
 	
 	/* Ban Check Module */
-	g_cvEnableBanDetection   = AutoExecConfig_CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
-	g_cvBansWhitelist 		 = AutoExecConfig_CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_cvEnableBanDetection   = AutoExecConfig_CreateConVar("sm_profilestatus_bans_enable", "1", "Enable Ban Checking functions?", _, true, 0.0, true, 1.0);
+	g_cvBansWhitelist 		 = AutoExecConfig_CreateConVar("sm_profilestatus_bans_whitelist", "1", "Enable Bans Whitelist?", _, true, 0.0, true, 1.0);
 	g_cvVACDays 			 = AutoExecConfig_CreateConVar("sm_profilestatus_vac_days", "0", "Minimum days since the last VAC ban to be allowed into the server (0 for zero tolerance).");
 	g_cvVACAmount 			 = AutoExecConfig_CreateConVar("sm_profilestatus_vac_amount", "0", "Amount of VAC bans tolerated until prohibition (0 for zero tolerance).");
-	g_cvCommunityBan 		 = AutoExecConfig_CreateConVar("sm_profilestatus_community_ban", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban");
+	g_cvCommunityBan 		 = AutoExecConfig_CreateConVar("sm_profilestatus_community_ban", "0", "0- Don't kick if there's a community ban | 1- Kick if there's a community ban", _, true, 0.0, true, 1.0);
 	g_cvGameBans 			 = AutoExecConfig_CreateConVar("sm_profilestatus_game_bans", "5", "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
 	g_cvEconomyBan 			 = AutoExecConfig_CreateConVar("sm_profilestatus_economy_bans", "0", "0- Don't check for economy bans | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);
 											
 	/* Steam Level Check Module */
+<<<<<<< Updated upstream
 	g_cvEnableLevelCheck	 = AutoExecConfig_CreateConVar("sm_profilestatus_level_enable", "1", "Enable Steam Level Checking functions", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvLevelWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_enable", "1", "Enable Steam Level Check Whitelist?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_cvLevelWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_auto", "1", "Whitelist members that have been checked automatically?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+=======
+	g_cvEnableLevelCheck	 = AutoExecConfig_CreateConVar("sm_profilestatus_level_enable", "1", "Enable Steam Level Checking functions", _, true, 0.0, true, 1.0);
+	g_cvLevelWhitelistEnable = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_enable", "1", "Enable Steam Level Check Whitelist?", _, true, 0.0, true, 1.0);
+	g_cvLevelWhitelistAuto   = AutoExecConfig_CreateConVar("sm_profilestatus_level_whitelist_auto", "1", "Whitelist members that have been checked automatically?", _, true, 0.0, true, 1.0);
+>>>>>>> Stashed changes
 	g_cvMinLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_minlevel", "", "Minimum level required to enter the server.");
 	g_cvMaxLevel			 = AutoExecConfig_CreateConVar("sm_profilestatus_maxlevel", "", "Maximum level tolerated to enter the server (can be left blank for no maximum).");
 	
 	/* Private Profile Check Module */
+<<<<<<< Updated upstream
 	g_cvEnablePrivateProfileCheck  = AutoExecConfig_CreateConVar("sm_profilestatus_privateprofile_enable", "1", "Block Fully Private Profiles?", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
+=======
+	g_cvEnablePrivateProfileCheck  		= AutoExecConfig_CreateConVar("sm_profilestatus_privateprofile_enable", "1", "Block Fully Private Profiles?", _, true, 0.0, true, 1.0);
+
+>>>>>>> Stashed changes
 	RegAdminCmd("sm_ps", Command_Generic, ADMFLAG_GENERIC, "Generic Plugin Command.");
 	
 	LoadTranslations("profilestatus.phrases");
@@ -143,7 +178,11 @@ public void OnConfigsExecuted() {
 	g_cvDatabase.GetString(cvDatabase, sizeof(cvDatabase));
 	
 	minHours   = g_cvMinHours.IntValue;
+<<<<<<< Updated upstream
 	vacDays	= g_cvVACDays.IntValue;
+=======
+	vacDays	   = g_cvVACDays.IntValue;
+>>>>>>> Stashed changes
 	vacAmount  = g_cvVACAmount.IntValue;
 	gameBans   = g_cvGameBans.IntValue;
 	economyBan = g_cvEconomyBan.IntValue;
@@ -158,6 +197,7 @@ public void OnConfigsExecuted() {
 		Database.Connect(SQL_ConnectDatabase, cvDatabase);
 	else
 		PrintToServer("[PS] No usage of database detected! Aborting database connection.");
+<<<<<<< Updated upstream
 		
 }
 
@@ -1161,6 +1201,16 @@ public void SQL_Command(Database db, DBResultSet results, const char[] error, Da
 /* On Client Authorized */
 
 public void OnClientAuthorized(int client) {
+=======
+}
+
+/* On Client Authorized */
+
+public void OnClientPostAdminCheck(int client) {
+	
+	if (IsFakeClient(client))
+		return;
+>>>>>>> Stashed changes
 	
 	if (IsFakeClient(client))
 		return;
@@ -1169,6 +1219,7 @@ public void OnClientAuthorized(int client) {
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	
 	if (g_cvEnableHourCheck.BoolValue) {
+<<<<<<< Updated upstream
 		
 		if (g_cvHoursWhitelistEnable.BoolValue) {
 			
@@ -1178,6 +1229,11 @@ public void OnClientAuthorized(int client) {
 		
 		else {
 			
+=======
+		if (g_cvHoursWhitelistEnable.BoolValue) {
+			QueryHoursWhitelist(client, auth);
+		} else
+>>>>>>> Stashed changes
 			RequestHours(client, auth);
 			
 		}
@@ -1187,7 +1243,10 @@ public void OnClientAuthorized(int client) {
 	if (g_cvEnableBanDetection.BoolValue) {
 		
 		if (g_cvBansWhitelist.BoolValue) {
+<<<<<<< Updated upstream
 			
+=======
+>>>>>>> Stashed changes
 			QueryBansWhitelist(client, auth);
 			
 		} 
@@ -1202,7 +1261,10 @@ public void OnClientAuthorized(int client) {
 	if (g_cvEnableLevelCheck.BoolValue) {
 		
 		if (g_cvLevelWhitelistEnable.BoolValue) {
+<<<<<<< Updated upstream
 			
+=======
+>>>>>>> Stashed changes
 			QueryLevelWhitelist(client, auth);
 			
 		} 
@@ -1216,9 +1278,15 @@ public void OnClientAuthorized(int client) {
 	}
 	
 	if (g_cvEnablePrivateProfileCheck.BoolValue) {
+<<<<<<< Updated upstream
 		
 		CheckPrivateProfile(client, auth);
 		
 	}
 	
 }
+=======
+		CheckPrivateProfile(client, auth);
+	}
+} 
+>>>>>>> Stashed changes

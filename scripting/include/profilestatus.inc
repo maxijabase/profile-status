@@ -218,7 +218,7 @@ stock bool IsCommunityBanned(const char[] responseBodyBans) {
  * @param EcBan          Variable to store the type of Economy Ban.
  */
 
-stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan) { 
+stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan2) { 
     char str[7][64];
     
     ExplodeString(responseBodyBans, ",", str, sizeof(str), sizeof(str[]));
@@ -229,7 +229,7 @@ stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan) {
             
             char str2[2][32];
             ExplodeString(str[i], ":", str2, sizeof(str2), sizeof(str2[]));
-            strcopy(EcBan, 15, str2[1]);
+            strcopy(EcBan2, 15, str2[1]);
             
         }
     }
@@ -242,6 +242,11 @@ stock void GetEconomyBans(const char[] responseBodyBans, char[] EcBan) {
  * @param responseBody          API response body.
  */
 
+<<<<<<< Updated upstream
 stock bool IsAPIKeyCorrect(char[] cAPIKey) {
 	return (cAPIKey[0] == '\0' || !SimpleRegexMatch(cAPIKey, "^[0-9A-Z]*$")) ? false : true;
+=======
+stock bool IsAPIKeyCorrect(char[] cAPIKey2) {
+	return (cAPIKey2[0] == '\0' || !SimpleRegexMatch(cAPIKey2, "^[0-9A-Z]*$")) ? false : true;
+>>>>>>> Stashed changes
 }
