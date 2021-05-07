@@ -12,3 +12,7 @@ Profile Status is a SourceMod plugin designed to restrict entrance to any Source
 ## More Info
 
 https://forums.alliedmods.net/showthread.php?t=323407
+
+## Notice
+
+Currently not maintained by me anymore. I encourage the community to fork it, enhance it and fix its current issues.
