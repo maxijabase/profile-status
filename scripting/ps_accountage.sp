@@ -26,10 +26,17 @@ public Plugin myinfo =
 ConVar cvMinimumAge;
 ConVar cvAllowFetchFailure;
 ConVar cvEnableDatabase;
+ConVar cvDatabaseName;
 
 char minimumAge[16];
+char databaseName[32];
 bool allowFetchFailure;
 bool enableDatabase;
+bool isSQLite;
+
+Database DB;
+
+ArrayList tempBlacklist;
 
 public void OnPluginStart()
 {
@@ -44,8 +51,11 @@ public void OnPluginStart()
   cvAllowFetchFailure = AutoExecConfig_CreateConVar("sm_ps_ag_allow_invisible_date", "1", 
     "Let the player in if their account creation date is hidden due to private profile. This will not kick players if the API returned an error.");
   
-  cvEnableDatabase = AutoExecConfig_CreateConVar("sm_ps_ag_enable_database", "0", 
+  cvEnableDatabase = AutoExecConfig_CreateConVar("sm_ps_ag_enable_database", "1", 
     "Enable database usage to prevent players from being checked every time.");
+  
+  cvDatabaseName = AutoExecConfig_CreateConVar("sm_ps_ag_database_name", "storage-local", 
+    "Database connection name. Change this only if you're going to use a different database connection to store whitelisted players, otherwise it'll stay locally.");
   
   AutoExecConfig_ExecuteFile();
   AutoExecConfig_CleanFile();
@@ -64,35 +74,84 @@ public void OnLibraryAdded(const char[] name)
   }
 }
 
-public void OnConfigsExecuted() {
+public void OnConfigsExecuted()
+{
   cvMinimumAge.GetString(minimumAge, sizeof(minimumAge));
+  cvDatabaseName.GetString(databaseName, sizeof(databaseName));
   allowFetchFailure = cvAllowFetchFailure.BoolValue;
   enableDatabase = cvEnableDatabase.BoolValue;
   
-  if (ParseTime(minimumAge) == -1) {
+  if (ParseTime(minimumAge) == -1)
+  {
     SetFailState("Minimum age cvar has been set incorrectly! Please check the format.");
   }
   
-  if (enableDatabase) {
-    Database.Connect(OnDatabaseConnected, "accountagecontrol");
+  if (enableDatabase)
+  {
+    Database.Connect(OnDatabaseConnected, databaseName);
   }
 }
 
-public void OnDatabaseConnected(Database db, const char[] error, any data) {
+public void OnDatabaseConnected(Database db, const char[] error, any data)
+{
+  if (db == null)
+  {
+    SetFailState("Database connection failed! %s", error);
+  }
+  DB = db;
+  CreateTables();
   
+  char driver[2];
+  DB.Driver.GetIdentifier(driver, sizeof(driver));
+  isSQLite = driver[0] == 's';
 }
 
 public void OnMapStart()
 {
+  tempBlacklist = new ArrayList(ByteCountToCells(32));
+}
+
+public void OnClientPostAdminCheck(int client)
+{
+  if (enableDatabase && DB != null)
+  {
+    GetPlayerFromWhitelist(client);
+  }
+  else
+  {
+    PI_GetAccountCreationDate(client, OnCreationDateReceived, GetClientUserId(client));
+  }
+}
+
+void GetPlayerFromWhitelist(int client)
+{
+  char steamid[16];
+  GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
   
+  char query[256];
+  DB.Format(query, sizeof(query), "SELECT steamid FROM ps_accountage_whitelist WHERE steamid = '%s'", steamid);
+  DB.Query(OnPlayerReceived, query, GetClientUserId(client));
 }
 
-public void OnClientPostAdminCheck(int client) {
-  PI_GetAccountCreationDate(client, OnCreationDateReceived, GetClientUserId(client));
+public void OnPlayerReceived(Database db, DBResultSet results, const char[] error, int userid)
+{
+  if (db == null || results == null)
+  {
+    LogError("Get player from whitelist failure! %s", error);
+    return;
+  }
+  
+  if (!results.FetchRow())
+  {
+    PI_GetAccountCreationDate(GetClientOfUserId(userid), OnCreationDateReceived);
+  }
 }
 
-public void OnCreationDateReceived(AccountCreationDateResponse response, const char[] error, int timestamp, int userid) {
+public void OnCreationDateReceived(AccountCreationDateResponse response, const char[] error, int timestamp, int userid)
+{
   int client = GetClientOfUserId(userid);
+  char steamid[16];
+  GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
   
   switch (response)
   {
@@ -107,6 +166,7 @@ public void OnCreationDateReceived(AccountCreationDateResponse response, const c
       {
         KickClient(client, "Your account's creation date could not be verified by the server");
         LogMessage("Client %N's account creation date could not be seen, rejecting...");
+        tempBlacklist.PushString(steamid);
       }
       else
       {
@@ -118,10 +178,64 @@ public void OnCreationDateReceived(AccountCreationDateResponse response, const c
     {
       int current = GetTime();
       int cutoff = current - (ParseTime(minimumAge) - current);
-      if (timestamp >= cutoff) {
+      if (timestamp >= cutoff)
+      {
         KickClient(client, "Your account's creation date does not meet this server's requirements");
         LogMessage("Client %N's account's creation date requirements were not met, rejecting...", client);
+        tempBlacklist.PushString(steamid);
+      }
+      else
+      {
+        LogMessage("Client %N's account's creation date meets the requirements, allowing...");
+        
+        if (enableDatabase && DB != null)
+        {
+          SaveToWhitelist(steamid);
+        }
       }
     }
   }
 }
+
+void SaveToWhitelist(const char[] steamid)
+{
+  char query[512];
+  DB.Format(query, sizeof(query), "INSERT INTO ps_accountage_whitelist VALUES ('%s')", steamid);
+  DB.Query(OnPlayerSaved, query);
+}
+
+public void OnPlayerSaved(Database db, DBResultSet results, const char[] error, any data) {
+  
+  if (db == null || results == null)
+  {
+    LogError("Save player to whitelist failure! %s", error);
+    return;
+  }
+}
+
+void CreateTables()
+{
+  char query[1024];
+  
+  if (isSQLite)
+  {
+    DB.Format(query, sizeof(query), 
+      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17), unique (steamid));");
+  }
+  else
+  {
+    DB.Format(query, sizeof(query), 
+      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17) UNIQUE);");
+  }
+  
+  DB.Query(OnTablesCreated, query);
+}
+
+public void OnTablesCreated(Database db, DBResultSet results, const char[] error, any data)
+{
+  if (db == null || results == null)
+  {
+    LogError("Create Table Query failure! %s", error);
+    return;
+  }
+} 
