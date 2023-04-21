@@ -113,6 +113,15 @@ public void OnMapStart()
 
 public void OnClientPostAdminCheck(int client)
 {
+  char steamid[18];
+  GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
+  
+  if (tempBlacklist.FindString(steamid) != -1)
+  {
+    KickClient(client, "Your account's creation date does not meet this server's requirements");
+    return;
+  }
+  
   if (enableDatabase && DB != null)
   {
     GetPlayerFromWhitelist(client);
@@ -125,7 +134,7 @@ public void OnClientPostAdminCheck(int client)
 
 void GetPlayerFromWhitelist(int client)
 {
-  char steamid[16];
+  char steamid[18];
   GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
   
   char query[256];
@@ -143,14 +152,14 @@ public void OnPlayerReceived(Database db, DBResultSet results, const char[] erro
   
   if (!results.FetchRow())
   {
-    PI_GetAccountCreationDate(GetClientOfUserId(userid), OnCreationDateReceived);
+    PI_GetAccountCreationDate(GetClientOfUserId(userid), OnCreationDateReceived, userid);
   }
 }
 
 public void OnCreationDateReceived(AccountCreationDateResponse response, const char[] error, int timestamp, int userid)
 {
   int client = GetClientOfUserId(userid);
-  char steamid[16];
+  char steamid[18];
   GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
   
   switch (response)
@@ -166,7 +175,6 @@ public void OnCreationDateReceived(AccountCreationDateResponse response, const c
       {
         KickClient(client, "Your account's creation date could not be verified by the server");
         LogMessage("Client %N's account creation date could not be seen, rejecting...");
-        tempBlacklist.PushString(steamid);
       }
       else
       {
@@ -186,12 +194,12 @@ public void OnCreationDateReceived(AccountCreationDateResponse response, const c
       }
       else
       {
-        LogMessage("Client %N's account's creation date meets the requirements, allowing...");
-        
         if (enableDatabase && DB != null)
         {
           SaveToWhitelist(steamid);
         }
+        
+        LogMessage("Client %N's account's creation date meets the requirements, allowing...", client);
       }
     }
   }
@@ -225,7 +233,7 @@ void CreateTables()
   else
   {
     DB.Format(query, sizeof(query), 
-      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17) UNIQUE);");
+      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17) PRIMARY KEY);");
   }
   
   DB.Query(OnTablesCreated, query);
