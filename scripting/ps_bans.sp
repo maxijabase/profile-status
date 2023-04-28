@@ -3,10 +3,15 @@
 #include <playerinfo>
 #include <autoexecconfig>
 
+#undef REQUIRE_PLUGIN
+#include <updater>
+
 #pragma semicolon 1
 #pragma newdecls required
 
 #define PLUGIN_VERSION "1.0"
+
+#define UPDATE_URL "https://raw.githubusercontent.com/maxijabase/profile-status/master/updatefile.txt"
 
 public Plugin myinfo = 
 {
@@ -46,6 +51,12 @@ enum
   EconomyBan_DisallowAll
 }
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+  RegPluginLibrary("profilestatus_bans");
+  return APLRes_Success;
+}
+
 public void OnPluginStart()
 {
   AutoExecConfig_CreateConVar("sm_ps_bans_version", PLUGIN_VERSION, "Standard plugin version ConVar.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
@@ -69,7 +80,7 @@ public void OnPluginStart()
     "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
   
   cvEconomyBanState = AutoExecConfig_CreateConVar("sm_ps_bans_economy", "0", 
-    "0: Allow all economy ban states | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);
+    "0: Allow all economy ban states | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);  
 }
 
 public void OnConfigsExecuted()
@@ -114,12 +125,12 @@ void CreateTables()
   if (isSQLite)
   {
     DB.Format(query, sizeof(query), 
-      "CREATE TABLE IF NOT EXISTS ps_bans_whitelist(steamid VARCHAR(17), unique (steamid));");
+      "CREATE TABLE IF NOT EXISTS ps_bans_whitelist(steamid VARCHAR(17), alias VARCHAR(32), unique (steamid));");
   }
   else
   {
     DB.Format(query, sizeof(query), 
-      "CREATE TABLE IF NOT EXISTS ps_bans_whitelist(steamid VARCHAR(17) PRIMARY KEY);");
+      "CREATE TABLE IF NOT EXISTS ps_bans_whitelist(steamid VARCHAR(17) PRIMARY KEY, alias VARCHAR(32));");
   }
   
   DB.Query(OnTablesCreated, query);
