@@ -38,6 +38,12 @@ Database DB;
 
 ArrayList tempBlacklist;
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+  RegPluginLibrary("profilestatus_accountage");
+  return APLRes_Success;
+}
+
 public void OnPluginStart()
 {
   AutoExecConfig_SetCreateFile(true);
@@ -228,12 +234,12 @@ void CreateTables()
   if (isSQLite)
   {
     DB.Format(query, sizeof(query), 
-      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17), unique (steamid));");
+      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17), alias VARCHAR(32), unique (steamid));");
   }
   else
   {
     DB.Format(query, sizeof(query), 
-      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17) PRIMARY KEY);");
+      "CREATE TABLE IF NOT EXISTS ps_accountage_whitelist(steamid VARCHAR(17) PRIMARY KEY, alias VARCHAR(32));");
   }
   
   DB.Query(OnTablesCreated, query);
