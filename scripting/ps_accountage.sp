@@ -20,7 +20,7 @@ public Plugin myinfo =
   author = "ampere", 
   description = "Blocks accounts based on their age.", 
   version = PLUGIN_VERSION, 
-  url = "Your website URL/AlliedModders profile URL"
+  url = "github.com/maxijabase"
 };
 
 ConVar cvMinimumAge;

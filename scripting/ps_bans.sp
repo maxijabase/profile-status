@@ -59,6 +59,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+  AutoExecConfig_SetCreateFile(true);
+  AutoExecConfig_SetFile("ps_bans");
+  
   AutoExecConfig_CreateConVar("sm_ps_bans_version", PLUGIN_VERSION, "Standard plugin version ConVar.", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
   
   cvEnableWhitelist = AutoExecConfig_CreateConVar("sm_ps_bans_whitelist", "1", 
@@ -80,7 +83,23 @@ public void OnPluginStart()
     "Amount of game bans tolerated until prohibition (0 for zero tolerance).");
   
   cvEconomyBanState = AutoExecConfig_CreateConVar("sm_ps_bans_economy", "0", 
-    "0: Allow all economy ban states | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);  
+    "0: Allow all economy ban states | 1- Kick if user is economy \"banned\" only. | 2- Kick if user is in either \"banned\" or \"probation\" state.", _, true, 0.0, true, 2.0);
+  
+  AutoExecConfig_ExecuteFile();
+  AutoExecConfig_CleanFile();
+  
+  if (LibraryExists("updater"))
+  {
+    Updater_AddPlugin(UPDATE_URL);
+  }
+}
+
+public void OnLibraryAdded(const char[] name)
+{
+  if (StrEqual(name, "updater"))
+  {
+    Updater_AddPlugin(UPDATE_URL);
+  }
 }
 
 public void OnConfigsExecuted()
@@ -182,7 +201,7 @@ public void OnBansReceived(PlayerBansResponse response, const char[] error, Play
     }
     case PlayerBans_Success:
     {
-      if (vacMinDays >= bans.DaysSinceLastBan)
+      if (vacMinDays > bans.DaysSinceLastBan)
       {
         block = true;
         KickClient(client, "Your account does not meet this server's minimum days since last VAC ban criteria");
