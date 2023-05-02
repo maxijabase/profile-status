@@ -1,0 +1,19 @@
+"Phrases"
+{
+  "profilestatus_accountage"
+  {
+    "en" "Account Age Whitelist"
+  }
+  "profilestatus_bans"
+  {
+    "en" "Bans Whitelist"
+  }
+  "profilestatus_steamlevel"
+  {
+    "en" "Steam Level Whitelist"
+  }
+  "profilestatus_profileprivacy"
+  {
+    "en" "Profile Privacy Whitelist"
+  }
+}
