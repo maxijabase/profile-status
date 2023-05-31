@@ -15,4 +15,4 @@ https://forums.alliedmods.net/showthread.php?t=323407
 
 ## Notice
 
-Currently not maintained by me anymore. I encourage the community to fork it, enhance it and fix its current issues.
+Rewrite in progress, check out the [v3 branch](../../tree/v3).
